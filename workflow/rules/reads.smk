@@ -11,7 +11,7 @@ rule seqtk__subsample_reads_pe:
     log:
         "logs/seqtk/subsample_reads_pe/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.5/wrappers/seqtk/subsample_paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/seqtk/subsample_paired"
 
 
 rule cutadapt__trim_reads_pe:
@@ -29,7 +29,7 @@ rule cutadapt__trim_reads_pe:
     log:
         "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.5/wrappers/cutadapt/paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/cutadapt/paired"
 
 
 rule kraken__decontaminate:
@@ -47,7 +47,7 @@ rule kraken__decontaminate:
     log:
         "logs/kraken/decontaminate/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.5/wrappers/kraken/decontaminate_pe"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/kraken/decontaminate_pe"
 
 
 rule fastuniq__deduplicate_reads:
@@ -63,7 +63,7 @@ rule fastuniq__deduplicate_reads:
     log:
         "logs/fastuniq/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.5/wrappers/fastuniq/paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/fastuniq/paired"
 
 
 rule fastqc__quality_report:
@@ -86,4 +86,4 @@ rule fastqc__quality_report:
     log:
         "logs/fastqc/{step}/{sample}_{orientation}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.5/wrappers/fastqc/quality"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/fastqc/quality"

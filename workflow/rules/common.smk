@@ -100,19 +100,19 @@ def get_reads_for_step(step: str, sample: str):
 
 
 def get_reads_for_decontamination(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"))
+    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
 
 
 def get_reads_for_deduplication(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"))
+    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
 
 
 def get_reads_for_trimming(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"))
+    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
 
 
 def get_reads_for_subsampling(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"))
+    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
 
 
 #### RULE-GRANULARITY STUFF #################################################################
