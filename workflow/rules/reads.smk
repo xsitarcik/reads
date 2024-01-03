@@ -38,8 +38,8 @@ rule kraken__decontaminate:
         kraken_output="results/kraken/{sample}.kraken",
         kraken_report="results/kraken/{sample}.kreport2",
     output:
-        r1="results/reads/decontaminated/{sample}_R1.fastq.gz",
-        r2="results/reads/decontaminated/{sample}_R2.fastq.gz",
+        r1=temp("results/reads/decontaminated/{sample}_R1.fastq.gz"),
+        r2=temp("results/reads/decontaminated/{sample}_R2.fastq.gz"),
         std_out=temp("results/reads/decontaminated/{sample}_decontamination.out"),
     params:
         taxid=" ".join(str(taxa_id) for taxa_id in config["decontamination"]["exclude_taxa_ids"]),
@@ -54,8 +54,8 @@ rule fastuniq__deduplicate_reads:
     input:
         unpack(get_reads_for_deduplication),
     output:
-        r1="results/reads/deduplicated/{sample}_R1.fastq.gz",
-        r2="results/reads/deduplicated/{sample}_R2.fastq.gz",
+        r1=temp("results/reads/deduplicated/{sample}_R1.fastq.gz"),
+        r2=temp("results/reads/deduplicated/{sample}_R2.fastq.gz"),
         unzipped_out_r1=temp("results/reads/deduplicated/{sample}_R1.fastq"),
         unzipped_out_r2=temp("results/reads/deduplicated/{sample}_R2.fastq"),
         pair_description=temp("results/reads/deduplicated/{sample}.txt"),

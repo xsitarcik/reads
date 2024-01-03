@@ -249,7 +249,7 @@ definitions:
       keep_trimmed_only:
         type: boolean
         default: false
-        description: "Optional. Discard reads with no adapters found."
+        description: "Discard reads with no adapters found."
       read_location:
         type: string
         enum:
@@ -257,13 +257,13 @@ definitions:
           - "regular"
           - "front"
         default: "anywhere"
-        description: "Optional. Path to the adapter file. Search for adapters anywhere in the read."
+        description: "Path to the adapter file. Search for adapters anywhere in the read."
     required:
       - do
     if:
       properties:
         do:
-          const: false
+          const: true
     then:
       required:
         - adapters_fasta
