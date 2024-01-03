@@ -63,6 +63,15 @@ definitions:
       - max_mem_mb
       - flow
       - reports_fastqc
+    if:
+      properties:
+        flow:
+          contains:
+            type: "string"
+            const": "decontaminated"
+    then:
+      required:
+        - decontamination
     title: Reads
   Subsampling:
     type: object
@@ -77,7 +86,9 @@ definitions:
         type: boolean
         default: True
     required:
+      - seed
       - n_reads
+      - reduce_memory
     title: Subsampling
   Decontamination:
     type: object
@@ -86,9 +97,11 @@ definitions:
       kraken_dir:
         type: string
         description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename."
+        pattern: '.*k2_.*_\d{8}$'
       exclude_taxa_ids:
         type: array
         description: "list of taxonomy IDs to exclude."
+        min_items: 1
         items:
           type: integer
       exclude_children:
@@ -106,6 +119,9 @@ definitions:
     required:
       - exclude_taxa_ids
       - kraken_dir
+      - exclude_children
+      - exclude_ancestors
+      - save_memory
   ReportsFastqc:
     type: object
     additionalProperties: false
@@ -122,6 +138,8 @@ definitions:
             - "trimmed"
             - "subsampled"
             - "deduplicated"
+    required:
+      - generate_for_steps
     title: ReportsFastqc
   Trimming:
     type: object

@@ -58,10 +58,10 @@ def get_outputs():
             f"results/reads/{last_step}/{{sample}}_{{pair}}.fastq.gz", sample=sample_names, pair=["R1", "R2"]
         )
 
-    if config["reports_fastqc"]["generate_for_steps"]:
+    if fastqc_steps := config["reports_fastqc"]["generate_for_steps"]:
         outputs["fastqc_report"] = expand(
             "results/reads/{step}/fastqc/{sample}_{pair}.html",
-            step=["original", "trimmed", "decontaminated", "deduplicated"],
+            step=fastqc_steps,
             sample=sample_names,
             pair=["R1", "R2"],
         )
@@ -104,15 +104,15 @@ def get_reads_for_decontamination(wildcards):
 
 
 def get_reads_for_deduplication(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
+    return get_reads_for_step(get_previous_step_from_step("deduplicated"), wildcards.sample)
 
 
 def get_reads_for_trimming(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
+    return get_reads_for_step(get_previous_step_from_step("trimmed"), wildcards.sample)
 
 
 def get_reads_for_subsampling(wildcards):
-    return get_reads_for_step(get_previous_step_from_step("decontaminated"), wildcards.sample)
+    return get_reads_for_step(get_previous_step_from_step("subsampled"), wildcards.sample)
 
 
 #### RULE-GRANULARITY STUFF #################################################################

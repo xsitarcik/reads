@@ -33,7 +33,7 @@ trimming:
     adapters_fasta: "test_data/adapters.fa" # Adapters fasta used for adapter trimming.
 
 decontamination:
-  kraken_dir: "path_to_kraken/KRAKEN_TAG" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+  kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
     - 9606 # Homo Sapiens

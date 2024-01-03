@@ -6,7 +6,6 @@ min_version("7.25.0")
 localrules:
     all,
     curl__download_kraken_db,
-    krona__update_taxonomy,
 
 
 include: "rules/common.smk"

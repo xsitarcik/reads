@@ -1,6 +1,6 @@
 rule seqtk__subsample_reads_pe:
     input:
-        get_reads_for_subsampling,
+        unpack(get_reads_for_subsampling),
     output:
         r1=temp("results/reads/subsampled/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/subsampled/{sample}_R2.fastq.gz"),
@@ -16,7 +16,7 @@ rule seqtk__subsample_reads_pe:
 
 rule cutadapt__trim_reads_pe:
     input:
-        get_reads_for_trimming,
+        unpack(get_reads_for_trimming),
     output:
         r1=temp("results/reads/trimmed/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/trimmed/{sample}_R2.fastq.gz"),
@@ -34,7 +34,7 @@ rule cutadapt__trim_reads_pe:
 
 rule kraken__decontaminate:
     input:
-        get_reads_for_decontamination,
+        unpack(get_reads_for_decontamination),
         kraken_output="results/kraken/{sample}.kraken",
         kraken_report="results/kraken/{sample}.kreport2",
     output:
@@ -52,7 +52,7 @@ rule kraken__decontaminate:
 
 rule fastuniq__deduplicate_reads:
     input:
-        get_reads_for_deduplication,
+        unpack(get_reads_for_deduplication),
     output:
         r1="results/reads/deduplicated/{sample}_R1.fastq.gz",
         r2="results/reads/deduplicated/{sample}_R2.fastq.gz",

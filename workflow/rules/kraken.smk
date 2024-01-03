@@ -17,7 +17,7 @@ rule curl__download_kraken_db:
 
 rule kraken__analysis:
     input:
-        get_reads_for_decontamination,
+        unpack(get_reads_for_decontamination),
         kraken_tax=os.path.join(config["decontamination"]["kraken_dir"], "hash.k2d"),
     output:
         kraken_output=temp("results/kraken/{sample}.kraken"),
