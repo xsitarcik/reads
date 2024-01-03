@@ -1,1 +1,271 @@
-# schema for the config
+"$schema": http://json-schema.org/draft-06/schema#
+"$ref": "#/definitions/Reads"
+definitions:
+  Reads:
+    type: object
+    additionalProperties: false
+    properties:
+      pepfile:
+        type: string
+        description: "Path to the PEP file containing the info how to load the data."
+        default: "config/pep/config.yaml"
+      flow:
+        type: array
+        description: "Order of read processing steps."
+        default: []
+        items:
+          type: string
+          enum:
+            - "decontaminated"
+            - "trimmed"
+            - "subsampled"
+            - "deduplicated"
+      reports_fastqc:
+        type: object
+        default: { "generate_for_steps": [] }
+        "$ref": "#/definitions/ReportsFastqc"
+      max_threads:
+        type: integer
+        description: "Number of maximum threads to use in jobs."
+        default: 1
+        Minimum: 1
+      max_mem_mb:
+        type: integer
+        description: "Maximum memory in megabytes to allocate for any job."
+        Minimum: 2048
+        default: 2048
+      trimming:
+        type: object
+        "$ref": "#/definitions/Trimming"
+      subsampling:
+        type: object
+        "$ref": "#/definitions/Subsampling"
+      decontamination:
+        type: object
+        "$ref": "#/definitions/Decontamination"
+      resources:
+        type: object
+        "$ref": "#/definitions/Resources"
+        default: { "trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
+      threads:
+        type: object
+        "$ref": "#/definitions/Threads"
+        default:
+          {
+            "trimming": 1,
+            "fastqc": 1,
+            "decontamination": 1,
+            "deduplication": 1,
+          }
+    required:
+      - pepfile
+      - max_threads
+      - max_mem_mb
+      - flow
+      - reports_fastqc
+    title: Reads
+  Subsampling:
+    type: object
+    additionalProperties: false
+    properties:
+      seed:
+        type: integer
+        default: 1
+      n_reads:
+        type: integer
+      reduce_memory:
+        type: boolean
+        default: True
+    required:
+      - n_reads
+    title: Subsampling
+  Decontamination:
+    type: object
+    additionalProperties: false
+    properties:
+      kraken_dir:
+        type: string
+        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename."
+      exclude_taxa_ids:
+        type: array
+        description: "list of taxonomy IDs to exclude."
+        items:
+          type: integer
+      exclude_children:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at more specific levels than specified taxonomy ID levels."
+      exclude_ancestors:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels."
+      save_memory:
+        type: boolean
+        description: "if true, kraken limits RAM memory usage but sacrifices speed."
+        default: true
+    required:
+      - exclude_taxa_ids
+      - kraken_dir
+  ReportsFastqc:
+    type: object
+    additionalProperties: false
+    properties:
+      generate_for_steps:
+        type: array
+        description: "Steps for which FastQC report should be generated."
+        default: []
+        items:
+          type: string
+          enum:
+            - "original"
+            - "decontaminated"
+            - "trimmed"
+            - "subsampled"
+            - "deduplicated"
+    title: ReportsFastqc
+  Trimming:
+    type: object
+    additionalProperties: false
+    properties:
+      adapter_removal:
+        type: object
+        "$ref": "#/definitions/AdapterRemoval"
+        default: {}
+      shorten_to_length:
+        type: integer
+        description: "Optional. Shorten each read to the specified length. Corresponds to the cutadapt length parameter."
+      cut_from_start:
+        type: integer
+        description: "Optional. Removes a specified number of bases from the beginning of the read."
+      cut_from_end:
+        type: integer
+        description: "Optional. Removes a specified number of bases from the end of the read."
+      max_n_bases:
+        type: integer
+        description: "Optional. Removes reads with more N bases than the specified number."
+      max_expected_errors:
+        type: integer
+        description: "Optional. Discard reads whose expected number of errors exceeds this value."
+      max_length_r1:
+        type: integer
+        description: "Optional. Discards R1 reads longer than this."
+      max_length_r2:
+        type: integer
+        description: "Optional. Discards R2 reads longer than this."
+      min_length_r1:
+        type: integer
+        default: 1
+        description: "Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+      min_length_r2:
+        type: integer
+        default: 1
+        description: "Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+      quality_cutoff_from_3_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R1 read."
+      quality_cutoff_from_5_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R1 read."
+      quality_cutoff_from_3_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R2 read."
+      quality_cutoff_from_5_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R2 read."
+    required:
+      - adapter_removal
+    title: ReadsTrimming
+  AdapterRemoval:
+    type: object
+    additionalProperties: false
+    properties:
+      do:
+        type: boolean
+        default: false
+        description: "Whether to do adapter removal or not."
+      adapters_fasta:
+        type: string
+        description: "Adapters fasta used for adapter trimming."
+      overlap:
+        type: integer
+        default: 3
+        description: "Minimum number of bases required to overlap with the adapter."
+      error_rate:
+        type: number
+        default: 0.1
+        exclusiveMinimum: 0
+        description: "Error tolerance used when searching for adapter."
+      times:
+        type: integer
+        default: 1
+        description: "How many times to repeat adapter removal."
+      action:
+        type: string
+        enum:
+          - "retain"
+          - "trim"
+          - "mask"
+          - "none"
+          - "lowercase"
+        default: "trim"
+        description: "Defines an action to perform with the found adapter."
+      keep_trimmed_only:
+        type: boolean
+        default: false
+        description: "Optional. Discard reads with no adapters found."
+      read_location:
+        type: string
+        enum:
+          - "anywhere"
+          - "regular"
+          - "front"
+        default: "anywhere"
+        description: "Optional. Path to the adapter file. Search for adapters anywhere in the read."
+    required:
+      - do
+      - adapters_fasta
+      - overlap
+      - error_rate
+      - times
+      - action
+      - keep_trimmed_only
+      - read_location
+    title: AdapterRemoval
+  Resources:
+    additionalProperties: true
+    trimming_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for trimming."
+      default: 2048
+    fastqc_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for fastqc."
+      default: 2048
+    title: Resources
+    required:
+      - trimming_mem_mb
+      - fastqc_mem_mb
+  Threads:
+    additionalProperties: true
+    trimming:
+      type: integer
+      default: 1
+      description: "Number of threads to use for trimming."
+    deduplication:
+      type: integer
+      default: 1
+      description: "Number of threads to use for deduplication."
+    decontamination:
+      type: integer
+      default: 1
+      description: "Number of threads to use for decontamination."
+    fastqc:
+      type: integer
+      default: 1
+      description: "Number of threads to use for fastqc."
+    title: Threads
+    required:
+      - trimming
+      - fastqc
+      - decontamination
+      - deduplication

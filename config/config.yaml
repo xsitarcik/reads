@@ -1,1 +1,51 @@
-# template for the configuration of the workflow
+flow: [] # Choose and order from "subsampling", "trimming", "decontamination" and "deduplication"
+
+reports_fastqc:
+  generate_for_steps: []
+
+### HYPERPARAMETERS #############################
+
+subsampling:
+  seed: 1
+  n_reads: 1
+  reduce_memory: true
+
+trimming:
+  shorten_to_length: 500 # OPT shorten to this length.
+  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
+  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
+  min_length_r1: 35 # OPT, minimum R1 read length. The fourth step.
+  min_length_r2: 35 # OPT, minimum R2 read length. The fourth step.
+  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+  adapter_removal:
+    do: true
+    action: "trim" # Defines an action to perform with the found adapter.
+    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front',
+    adapters_fasta: "path_to_adapters/adapters.fa" # Adapters fasta used for adapter trimming.
+
+decontamination:
+  kraken_dir: "path_to_kraken/KRAKEN_TAG" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+  # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
+  exclude_taxa_ids: # list of taxonomy IDs to exclude.
+    - 9606 # Homo Sapiens
+  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
+  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
+
+### RESOURCES #############################
+
+max_threads: 8
+max_mem_mb: 16384
+
+resources:
+  trimming_mem_mb: 4096
+  fastqc_mem_mb: 2048
+
+threads:
+  trimming: 4
+  fastqc: 1
+  deduplication: 4
+  decontamination: 8
