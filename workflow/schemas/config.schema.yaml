@@ -180,11 +180,9 @@ definitions:
         description: "Optional. Discards R2 reads longer than this."
       min_length_r1:
         type: integer
-        default: 1
         description: "Optional. Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
       min_length_r2:
         type: integer
-        default: 1
         description: "Optional. Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
       quality_cutoff_from_3_end_r1:
         type: integer
