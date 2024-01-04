@@ -1,0 +1,24 @@
+flow:
+  - "subsampled"
+
+fastqc_reports:
+  - "original"
+  - "subsampled"
+
+### HYPERPARAMETERS #############################
+
+subsampling:
+  seed: 1
+  n_reads: 500
+  reduce_memory: true
+
+### RESOURCES #############################
+
+max_threads: 2
+max_mem_mb: 6192
+
+resources:
+  fastqc_mem_mb: 2048
+
+threads:
+  fastqc: 1
