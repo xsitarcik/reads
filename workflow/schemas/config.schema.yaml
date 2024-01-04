@@ -20,10 +20,18 @@ definitions:
             - "trimmed"
             - "subsampled"
             - "deduplicated"
-      reports_fastqc:
-        type: object
-        default: { "generate_for_steps": [] }
-        "$ref": "#/definitions/ReportsFastqc"
+      fastqc_reports:
+        type: array
+        description: "Steps for which FastQC report should be generated."
+        default: []
+        items:
+          type: string
+          enum:
+            - "original"
+            - "decontaminated"
+            - "trimmed"
+            - "subsampled"
+            - "deduplicated"
       max_threads:
         type: integer
         description: "Number of maximum threads to use in jobs."
@@ -62,7 +70,7 @@ definitions:
       - max_threads
       - max_mem_mb
       - flow
-      - reports_fastqc
+      - fastqc_reports
     allOf:
       - if:
           properties:
@@ -141,25 +149,6 @@ definitions:
       - exclude_children
       - exclude_ancestors
       - save_memory
-  ReportsFastqc:
-    type: object
-    additionalProperties: false
-    properties:
-      generate_for_steps:
-        type: array
-        description: "Steps for which FastQC report should be generated."
-        default: []
-        items:
-          type: string
-          enum:
-            - "original"
-            - "decontaminated"
-            - "trimmed"
-            - "subsampled"
-            - "deduplicated"
-    required:
-      - generate_for_steps
-    title: ReportsFastqc
   Trimming:
     type: object
     additionalProperties: false

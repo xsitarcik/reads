@@ -9,8 +9,16 @@ localrules:
 
 
 include: "rules/common.smk"
-include: "rules/reads.smk"
-include: "rules/kraken.smk"
+
+
+for step in config["flow"]:
+
+    include: f"rules/{step}.smk"
+
+
+if config["fastqc_reports"]:
+
+    include: "rules/fastqc.smk"
 
 
 wildcard_constraints:

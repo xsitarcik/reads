@@ -59,6 +59,33 @@ jobs:
           args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
           show-disk-usage-on-error: true
 
+      - name: Test workflow trimming only
+        uses: xsitarcik/snakemake-github-action@v1.25.1
+        with:
+          directory: .tests
+          snakefile: workflow/Snakefile
+          stagein: "conda config --set channel_priority flexible"
+          args: "--configfile config/config_only_trim.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+          show-disk-usage-on-error: true
+
+      - name: Test workflow decontamination only
+        uses: xsitarcik/snakemake-github-action@v1.25.1
+        with:
+          directory: .tests
+          snakefile: workflow/Snakefile
+          stagein: "conda config --set channel_priority flexible"
+          args: "--configfile config/config_only_decontamination.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+          show-disk-usage-on-error: true
+
+      - name: Test workflow subsampling only
+        uses: xsitarcik/snakemake-github-action@v1.25.1
+        with:
+          directory: .tests
+          snakefile: workflow/Snakefile
+          stagein: "conda config --set channel_priority flexible"
+          args: "--configfile config/config_only_subsampling.yaml --use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+          show-disk-usage-on-error: true
+
       - name: Test report
         uses: xsitarcik/snakemake-github-action@v1.25.1
         with:

@@ -58,10 +58,10 @@ def get_outputs():
             f"results/reads/{last_step}/{{sample}}_{{pair}}.fastq.gz", sample=sample_names, pair=["R1", "R2"]
         )
 
-    if fastqc_steps := config["reports_fastqc"]["generate_for_steps"]:
+    if config["fastqc_reports"]:
         outputs["fastqc_report"] = expand(
             "results/reads/{step}/fastqc/{sample}_{pair}.html",
-            step=fastqc_steps,
+            step=config["fastqc_reports"],
             sample=sample_names,
             pair=["R1", "R2"],
         )

@@ -33,3 +33,21 @@ rule kraken__analysis:
     shell:
         "(kraken2 --db {params.db_dir} --threads {threads} --paired --gzip-compressed"
         " {params.save_memory} --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
+
+
+rule kraken__decontaminate:
+    input:
+        unpack(get_reads_for_decontamination),
+        kraken_output="results/kraken/{sample}.kraken",
+        kraken_report="results/kraken/{sample}.kreport2",
+    output:
+        r1=temp("results/reads/decontaminated/{sample}_R1.fastq.gz"),
+        r2=temp("results/reads/decontaminated/{sample}_R2.fastq.gz"),
+        std_out=temp("results/reads/decontaminated/{sample}_decontamination.out"),
+    params:
+        taxid=" ".join(str(taxa_id) for taxa_id in config["decontamination"]["exclude_taxa_ids"]),
+        extra=get_kraken_decontamination_params(),
+    log:
+        "logs/kraken/decontaminate/{sample}.log",
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/kraken/decontaminate_pe"
