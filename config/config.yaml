@@ -22,7 +22,7 @@ trimming: # Required only if "trimming" in main "flow" element. See https://cuta
   quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
   quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
   adapter_removal:
-    do: true # If true, all below options are required.
+    do: true # If true, all below options are required. Else, they are ignored/can be deleted.
     action: "trim" # Defines an action to perform with the found adapter.
     overlap: 3 # Minimum number of bases required to overlap with the adapter (default: 3).
     read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front' and "anywhere" (default: "anywhere").

@@ -38,17 +38,6 @@ def get_constraints():
     return constraints
 
 
-def get_last_step_outputs():
-    if not config["flow"]:
-        return
-    last_step = config["flow"][-1]
-    return {
-        "final_reads": expand(
-            "results/reads/{}/{sample}_R1.fastq.gz",
-        )
-    }
-
-
 def get_outputs():
     outputs = {}
     sample_names = get_sample_names()
