@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/xsitarcik/reads/compare/v2.0.0...v2.0.1) (2024-01-05)
+
+
+### Bug Fixes
+
+* removed read group as it is not required ([d5c24fb](https://github.com/xsitarcik/reads/commit/d5c24fb344970c176a27b401d8e54b81e3757670))
+
 ## [2.0.0](https://github.com/xsitarcik/reads/compare/v1.1.0...v2.0.0) (2024-01-05)
 
 
