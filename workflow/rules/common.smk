@@ -89,9 +89,9 @@ def infer_fastq_path(wildcards):
     if wildcards.step != "original":
         return "results/reads/{step}/{sample}_{pair}.fastq.gz"
     if "pair" not in wildcards or wildcards.pair == "R1":
-        return get_one_fastq_file(wildcards, read_pair="fq1")[0]
+        return get_one_fastq_file(wildcards.sample, read_pair="fq1")[0]
     elif wildcards.pair == "R2":
-        return get_one_fastq_file(wildcards, read_pair="fq2")[0]
+        return get_one_fastq_file(wildcards.sample, read_pair="fq2")[0]
 
 
 def get_reads_for_step(step: str, sample: str):
