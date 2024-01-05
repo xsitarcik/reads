@@ -1,6 +1,6 @@
 rule custom__infer_and_store_read_group:
     input:
-        get_one_fastq_file,
+        infer_fastq_path,
     output:
         read_group="results/reads/original/read_group/{sample}.txt",
     params:

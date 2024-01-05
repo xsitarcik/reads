@@ -13,22 +13,14 @@ pepfile: config["pepfile"]
 validate(pep.sample_table, "../schemas/samples.schema.yaml")
 
 
-###### samples relevant stuff #################################################################
+### Layer for adapting other workflows  ###############################################################################
+
+
+### Data input handling independent of wildcards ######################################################################
 
 
 def get_sample_names():
     return list(pep.sample_table["sample_name"].values)
-
-
-def get_one_fastq_file(wildcards, read_pair="fq1"):
-    return pep.sample_table.loc[wildcards.sample][[read_pair]]
-
-
-def get_fastq_paths(wildcards):
-    return pep.sample_table.loc[wildcards.sample][["fq1", "fq2"]]
-
-
-### global config stuff #################################################################
 
 
 def get_constraints():
@@ -38,11 +30,38 @@ def get_constraints():
     return constraints
 
 
+def get_one_fastq_file(sample: str, read_pair="fq1"):
+    return pep.sample_table.loc[sample][[read_pair]]
+
+
+def get_fastq_paths(sample: str):
+    return pep.sample_table.loc[sample][["fq1", "fq2"]]
+
+
+def get_last_step():
+    return config["flow"][-1] if config["flow"] else None
+
+
+### Contract for other workflows ######################################################################################
+
+
+def get_final_fastq_for_sample(sample: str):
+    if last_step := get_last_step():
+        return expand(f"results/reads/{last_step}/{sample}_{{pair}}.fastq.gz", pair=["R1", "R2"])
+    return get_fastq_paths(sample)
+
+
+def get_read_group_for_sample(sample: str):
+    return "results/reads/original/read_group/{sample}.txt"
+
+
+### Global rule-set stuff #############################################################################################
+
+
 def get_outputs():
     outputs = {}
     sample_names = get_sample_names()
-    last_step = config["flow"][-1] if config["flow"] else None
-    if last_step:
+    if last_step := get_last_step():
         outputs["reads"] = expand(
             f"results/reads/{last_step}/{{sample}}_{{pair}}.fastq.gz", sample=sample_names, pair=["R1", "R2"]
         )
@@ -68,11 +87,11 @@ def get_previous_step_from_step(current_step: str):
 
 def infer_fastq_path(wildcards):
     if wildcards.step != "original":
-        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
-    if wildcards.orientation == "R1":
-        return get_one_fastq_file(wildcards, read_pair="fq1")[0]
-    elif wildcards.orientation == "R2":
-        return get_one_fastq_file(wildcards, read_pair="fq2")[0]
+        return "results/reads/{step}/{sample}_{pair}.fastq.gz"
+    if "pair" not in wildcards or wildcards.pair == "R1":
+        return get_one_fastq_file(wildcards.sample, read_pair="fq1")[0]
+    elif wildcards.pair == "R2":
+        return get_one_fastq_file(wildcards.sample, read_pair="fq2")[0]
 
 
 def get_reads_for_step(step: str, sample: str):
@@ -81,7 +100,7 @@ def get_reads_for_step(step: str, sample: str):
             "r1": f"results/reads/{step}/{sample}_R1.fastq.gz",
             "r2": f"results/reads/{step}/{sample}_R2.fastq.gz",
         }
-    paths = pep.sample_table.loc[sample][["fq1", "fq2"]]
+    paths = get_fastq_paths(sample)
     return {
         "r1": paths[0],
         "r2": paths[1],
@@ -104,7 +123,7 @@ def get_reads_for_subsampling(wildcards):
     return get_reads_for_step(get_previous_step_from_step("subsampled"), wildcards.sample)
 
 
-#### RULE-GRANULARITY STUFF #################################################################
+### Rule-granularity stuff ############################################################################################
 
 
 def parse_adapter_removal_params():
@@ -193,7 +212,7 @@ def get_kraken_decontamination_params():
     return " ".join(extra)
 
 
-### RESOURCES
+### Resource handling #################################################################################################
 
 
 def get_mem_mb_for_trimming(wildcards, attempt):
