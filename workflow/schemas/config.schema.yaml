@@ -3,7 +3,7 @@
 definitions:
   Reads:
     type: object
-    additionalProperties: false
+    additionalProperties: true
     properties:
       pepfile:
         type: string
