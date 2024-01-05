@@ -51,10 +51,6 @@ def get_final_fastq_for_sample(sample: str):
     return get_fastq_paths(sample)
 
 
-def get_read_group_for_sample(sample: str):
-    return "results/reads/original/read_group/{sample}.txt"
-
-
 ### Global rule-set stuff #############################################################################################
 
 

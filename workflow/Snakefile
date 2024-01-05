@@ -9,7 +9,6 @@ localrules:
 
 
 include: "rules/common.smk"
-include: "rules/read_group.smk"
 
 
 for step in config["reads__processing_flow"]:
