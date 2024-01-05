@@ -1,4 +1,4 @@
-flow:
+reads__processing_flow:
   - "subsampled"
 
 fastqc_reports:
@@ -7,7 +7,7 @@ fastqc_reports:
 
 ### HYPERPARAMETERS #############################
 
-subsampling:
+reads__subsampling:
   seed: 1
   n_reads: 500
   reduce_memory: true

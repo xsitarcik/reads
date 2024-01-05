@@ -1,4 +1,4 @@
-flow:
+reads__processing_flow:
   - "subsampled"
   - "trimmed"
   - "decontaminated"
@@ -10,12 +10,12 @@ fastqc_reports:
 
 ### HYPERPARAMETERS #############################
 
-subsampling:
+reads__subsampling:
   seed: 1
   n_reads: 500
   reduce_memory: true
 
-trimming:
+reads__trimming:
   shorten_to_length: 500 # OPT shorten to this length.
   max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
   max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
@@ -31,7 +31,7 @@ trimming:
     read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front',
     adapters_fasta: "test_data/adapters.fa" # Adapters fasta used for adapter trimming.
 
-decontamination:
+reads__decontamination:
   kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
@@ -46,11 +46,11 @@ max_threads: 2
 max_mem_mb: 6192
 
 resources:
-  trimming_mem_mb: 4096
+  reads__trimming_mem_mb: 4096
   fastqc_mem_mb: 2048
 
 threads:
-  trimming: 4
+  reads__trimming: 4
   fastqc: 1
-  deduplication: 4
-  decontamination: 8
+  reads__deduplication: 4
+  reads__decontamination: 8

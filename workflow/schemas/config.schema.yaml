@@ -42,28 +42,28 @@ definitions:
         description: "Maximum memory in megabytes to allocate for any job."
         Minimum: 2048
         default: 2048
-      trimming:
+      reads__trimming:
         type: object
-        "$ref": "#/definitions/Trimming"
-      subsampling:
+        "$ref": "#/definitions/ReadsTrimming"
+      reads__subsampling:
         type: object
-        "$ref": "#/definitions/Subsampling"
-      decontamination:
+        "$ref": "#/definitions/ReadsSubsampling"
+      reads__decontamination:
         type: object
-        "$ref": "#/definitions/Decontamination"
+        "$ref": "#/definitions/ReadsDecontamination"
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: { "trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
+        default: { "reads__trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
       threads:
         type: object
         "$ref": "#/definitions/Threads"
         default:
           {
-            "trimming": 1,
+            "reads__trimming": 1,
             "fastqc": 1,
-            "decontamination": 1,
-            "deduplication": 1,
+            "reads__decontamination": 1,
+            "reads__deduplication": 1,
           }
     required:
       - pepfile
@@ -80,7 +80,7 @@ definitions:
                 const: "decontaminated"
         then:
           required:
-            - decontamination
+            - reads__decontamination
       - if:
           properties:
             flow:
@@ -89,7 +89,7 @@ definitions:
                 const: "trimmed"
         then:
           required:
-            - trimming
+            - reads__trimming
       - if:
           properties:
             flow:
@@ -98,9 +98,9 @@ definitions:
                 const: "subsampled"
         then:
           required:
-            - subsampling
+            - reads__subsampling
     title: Reads
-  Subsampling:
+  ReadsSubsampling:
     type: object
     additionalProperties: false
     properties:
@@ -116,8 +116,8 @@ definitions:
       - seed
       - n_reads
       - reduce_memory
-    title: Subsampling
-  Decontamination:
+    title: ReadsSubsampling
+  ReadsDecontamination:
     type: object
     additionalProperties: false
     properties:
@@ -149,7 +149,8 @@ definitions:
       - exclude_children
       - exclude_ancestors
       - save_memory
-  Trimming:
+    title: ReadsDecontamination
+  ReadsTrimming:
     type: object
     additionalProperties: false
     properties:
@@ -263,7 +264,7 @@ definitions:
     title: AdapterRemoval
   Resources:
     additionalProperties: true
-    trimming_mem_mb:
+    reads__trimming_mem_mb:
       type: integer
       description: "Memory in MB to reserve for trimming."
       default: 2048
@@ -273,19 +274,19 @@ definitions:
       default: 2048
     title: Resources
     required:
-      - trimming_mem_mb
+      - reads__trimming_mem_mb
       - fastqc_mem_mb
   Threads:
     additionalProperties: true
-    trimming:
+    reads__trimming:
       type: integer
       default: 1
       description: "Number of threads to use for trimming."
-    deduplication:
+    reads__deduplication:
       type: integer
       default: 1
       description: "Number of threads to use for deduplication."
-    decontamination:
+    reads__decontamination:
       type: integer
       default: 1
       description: "Number of threads to use for decontamination."
@@ -295,7 +296,7 @@ definitions:
       description: "Number of threads to use for fastqc."
     title: Threads
     required:
-      - trimming
+      - reads__trimming
       - fastqc
-      - decontamination
-      - deduplication
+      - reads__decontamination
+      - reads__deduplication

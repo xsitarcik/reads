@@ -12,7 +12,7 @@ include: "rules/common.smk"
 include: "rules/read_group.smk"
 
 
-for step in config["flow"]:
+for step in config["reads__processing_flow"]:
 
     include: f"rules/{step}.smk"
 
