@@ -9,7 +9,7 @@ rule cutadapt__trim_reads_pe:
         extra=get_cutadapt_extra_pe(),
     resources:
         mem_mb=get_mem_mb_for_trimming,
-    threads: min(config["threads"]["trimming"], config["max_threads"])
+    threads: min(config["threads"]["reads__trimming"], config["max_threads"])
     log:
         "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:

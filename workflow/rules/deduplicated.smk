@@ -7,7 +7,7 @@ rule fastuniq__deduplicate_reads:
         unzipped_out_r1=temp("results/reads/deduplicated/{sample}_R1.fastq"),
         unzipped_out_r2=temp("results/reads/deduplicated/{sample}_R2.fastq"),
         pair_description=temp("results/reads/deduplicated/{sample}.txt"),
-    threads: min(config["threads"]["deduplication"], config["max_threads"])
+    threads: min(config["threads"]["reads__deduplication"], config["max_threads"])
     log:
         "logs/fastuniq/{sample}.log",
     wrapper:

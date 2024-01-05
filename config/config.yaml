@@ -1,15 +1,15 @@
-flow: [] # Choose and order from "subsampled", "trimmed", "decontaminated" and "deduplicated".
+reads__processing_flow: [] # Choose and order from "subsampled", "trimmed", "decontaminated" and "deduplicated".
 
 fastqc_reports: [] # Choose from "original", "subsampled", "trimmed", "decontaminated" and "deduplicated".
 
 ### HYPERPARAMETERS #############################
 
-subsampling: # Required only if "subsampled" in main "flow" element.
+reads__subsampling: # Required only if "subsampled" in main "flow" element.
   seed: 1
   n_reads: 1
   reduce_memory: true
 
-trimming: # Required only if "trimming" in main "flow" element. See https://cutadapt.readthedocs.io/en/stable/guide.html#read-processing-stages
+reads__trimming: # Required only if "trimming" in main "flow" element. See https://cutadapt.readthedocs.io/en/stable/guide.html#read-processing-stages
   shorten_to_length: 500 # OPT shorten to this length.
   max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
   max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
@@ -31,7 +31,7 @@ trimming: # Required only if "trimming" in main "flow" element. See https://cuta
     times: 1 # How many times to do adapter removal (default: 1).
     keep_trimmed_only: false # Discard reads with no adapters found (default: false).
 
-decontamination: # Required only if "trimming" in main "flow" element.
+reads__decontamination: # Required only if "trimming" in main "flow" element.
   kraken_dir: "path_to_kraken/{KRAKEN_TAG}" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
@@ -46,11 +46,11 @@ max_threads: 8
 max_mem_mb: 16384
 
 resources:
-  trimming_mem_mb: 4096
+  reads_trimming_mem_mb: 4096
   fastqc_mem_mb: 2048
 
 threads:
-  trimming: 4
+  reads_trimming: 4
+  reads_deduplication: 4
+  reads_decontamination: 8
   fastqc: 1
-  deduplication: 4
-  decontamination: 8

@@ -1,4 +1,4 @@
-flow:
+reads__processing_flow:
   - "trimmed"
 
 fastqc_reports:
@@ -7,7 +7,7 @@ fastqc_reports:
 
 ### HYPERPARAMETERS #############################
 
-trimming:
+reads__trimming:
   shorten_to_length: 500 # OPT shorten to this length.
   max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
   max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
@@ -26,9 +26,9 @@ max_threads: 2
 max_mem_mb: 6192
 
 resources:
-  trimming_mem_mb: 4096
+  reads__trimming_mem_mb: 4096
   fastqc_mem_mb: 2048
 
 threads:
-  trimming: 4
+  reads__trimming: 4
   fastqc: 1

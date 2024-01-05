@@ -39,7 +39,7 @@ def get_fastq_paths(sample: str):
 
 
 def get_last_step():
-    return config["flow"][-1] if config["flow"] else None
+    return config["reads__processing_flow"][-1] if config["reads__processing_flow"] else None
 
 
 ### Contract for other workflows ######################################################################################
@@ -79,7 +79,7 @@ def get_outputs():
 
 def get_previous_step_from_step(current_step: str):
     previous = "original"
-    for step in config["flow"]:
+    for step in config["reads__processing_flow"]:
         if step == current_step:
             return previous
         previous = step
@@ -128,35 +128,35 @@ def get_reads_for_subsampling(wildcards):
 
 def parse_adapter_removal_params():
     args_lst = []
-    adapters_file = config["trimming"]["adapter_removal"]["adapters_fasta"]
-    read_location = config["trimming"]["adapter_removal"]["read_location"]
+    adapters_file = config["reads__trimming"]["adapter_removal"]["adapters_fasta"]
+    read_location = config["reads__trimming"]["adapter_removal"]["read_location"]
     args_lst.append(f"--{read_location} file:{adapters_file}")
 
-    if config["trimming"]["adapter_removal"]["keep_trimmed_only"]:
+    if config["reads__trimming"]["adapter_removal"]["keep_trimmed_only"]:
         args_lst.append("--discard-untrimmed")
 
-    args_lst.append(f"--action {config['trimming']['adapter_removal']['action']}")
-    args_lst.append(f"--overlap {config['trimming']['adapter_removal']['overlap']}")
-    args_lst.append(f"--times {config['trimming']['adapter_removal']['times']}")
-    args_lst.append(f"--error-rate {config['trimming']['adapter_removal']['error_rate']}")
+    args_lst.append(f"--action {config['reads__trimming']['adapter_removal']['action']}")
+    args_lst.append(f"--overlap {config['reads__trimming']['adapter_removal']['overlap']}")
+    args_lst.append(f"--times {config['reads__trimming']['adapter_removal']['times']}")
+    args_lst.append(f"--error-rate {config['reads__trimming']['adapter_removal']['error_rate']}")
     return args_lst
 
 
 def get_cutadapt_extra() -> list[str]:
     args_lst = []
 
-    if "shorten_to_length" in config["trimming"]:
-        args_lst.append(f"--length {config['trimming']['shorten_to_length']}")
-    if "cut_from_start" in config["trimming"]:
-        args_lst.append(f"--cut {config['trimming']['cut_from_start']}")
-    if "cut_from_end" in config["trimming"]:
-        args_lst.append(f"--cut -{config['trimming']['cut_from_end']}")
-    if "max_n_bases" in config["trimming"]:
-        args_lst.append(f"--max-n {config['trimming']['max_n_bases']}")
-    if "max_expected_errors" in config["trimming"]:
-        args_lst.append(f"--max-expected-errors {config['trimming']['max_expected_errors']}")
+    if "shorten_to_length" in config["reads__trimming"]:
+        args_lst.append(f"--length {config['reads__trimming']['shorten_to_length']}")
+    if "cut_from_start" in config["reads__trimming"]:
+        args_lst.append(f"--cut {config['reads__trimming']['cut_from_start']}")
+    if "cut_from_end" in config["reads__trimming"]:
+        args_lst.append(f"--cut -{config['reads__trimming']['cut_from_end']}")
+    if "max_n_bases" in config["reads__trimming"]:
+        args_lst.append(f"--max-n {config['reads__trimming']['max_n_bases']}")
+    if "max_expected_errors" in config["reads__trimming"]:
+        args_lst.append(f"--max-expected-errors {config['reads__trimming']['max_expected_errors']}")
 
-    if config["trimming"]["adapter_removal"]["do"]:
+    if config["reads__trimming"]["adapter_removal"]["do"]:
         args_lst += parse_adapter_removal_params()
 
     return args_lst
@@ -187,7 +187,7 @@ def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
 def get_cutadapt_extra_pe() -> str:
     args_lst = get_cutadapt_extra()
 
-    cutadapt_config = config["trimming"]
+    cutadapt_config = config["reads__trimming"]
     if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "max_length_r1", "max_length_r2", "--maximum-length"):
         args_lst.append(parsed_arg)
     if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "min_length_r1", "min_length_r2", "--minimum-length"):
@@ -205,9 +205,9 @@ def get_cutadapt_extra_pe() -> str:
 
 def get_kraken_decontamination_params():
     extra = []
-    if config["decontamination"]["exclude_children"]:
+    if config["reads__decontamination"]["exclude_children"]:
         extra.append("--include-children")
-    if config["decontamination"]["exclude_ancestors"]:
+    if config["reads__decontamination"]["exclude_ancestors"]:
         extra.append("--include-parents")
     return " ".join(extra)
 
@@ -216,7 +216,7 @@ def get_kraken_decontamination_params():
 
 
 def get_mem_mb_for_trimming(wildcards, attempt):
-    return min(config["max_mem_mb"], config["resources"]["trimming_mem_mb"] * attempt)
+    return min(config["max_mem_mb"], config["resources"]["reads__trimming_mem_mb"] * attempt)
 
 
 def get_mem_mb_for_fastqc(wildcards, attempt):

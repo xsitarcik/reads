@@ -1,4 +1,4 @@
-flow:
+reads__processing_flow:
   - "decontaminated"
 
 fastqc_reports:
@@ -7,7 +7,7 @@ fastqc_reports:
 
 ### HYPERPARAMETERS #############################
 
-decontamination:
+reads__decontamination:
   kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
@@ -26,4 +26,4 @@ resources:
 
 threads:
   fastqc: 1
-  decontamination: 8
+  reads__decontamination: 8
