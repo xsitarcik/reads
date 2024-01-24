@@ -179,24 +179,24 @@ def get_cutadapt_extra(cutadapt_config) -> list[str]:
 
 
 def parse_paired_cutadapt_param(pe_config, param1, param2, arg_name) -> str:
-    if param1 in pe_config:
-        if param2 in pe_config:
+    if pe_config[param1]:
+        if pe_config[param2]:
             return f"{arg_name} {pe_config[param1]}:{pe_config[param2]}"
         else:
             return f"{arg_name} {pe_config[param1]}:"
-    elif param2 in pe_config:
+    elif pe_config[param2]:
         return f"{arg_name} :{pe_config[param2]}"
     return ""
 
 
-def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
-    if param1 in config:
-        if param2 in config:
-            return f"{arg_name} {config[param2]},{config[param1]}"
+def parse_cutadapt_comma_param(cutadapt_config, param1, param2, arg_name) -> str:
+    if cutadapt_config[param1]:
+        if cutadapt_config[param2]:
+            return f"{arg_name} {cutadapt_config[param2]},{cutadapt_config[param1]}"
         else:
-            return f"{arg_name} {config[param1]}"
-    elif param2 in config:
-        return f"{arg_name} {config[param2]},0"
+            return f"{arg_name} {cutadapt_config[param1]}"
+    elif cutadapt_config[param2]:
+        return f"{arg_name} {cutadapt_config[param2]},0"
     return ""
 
 
