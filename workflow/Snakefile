@@ -16,7 +16,7 @@ for step, tool in [item for item in config["reads"].items() if not item[0].start
     include: f"rules/{step}/{tool}.smk"
 
 
-if config.get("_generate_fastqc_for"):
+if config["reads"]["_generate_fastqc_for"]:
 
     include: "rules/fastqc.smk"
 
