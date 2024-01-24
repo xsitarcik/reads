@@ -1,6 +1,6 @@
 rule cutadapt__trim_reads_pe:
     input:
-        infer_fastqs_for_trimming,
+        unpack(infer_fastqs_for_trimming),
     output:
         fastq1="results/reads/trimming/{sample}_R1.fastq.gz",
         fastq2="results/reads/trimming/{sample}_R2.fastq.gz",
