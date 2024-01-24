@@ -1,13 +1,10 @@
-reads__processing_flow:
-  - "subsampled"
-
-fastqc_reports:
-  - "original"
-  - "subsampled"
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: "seqtk" # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  _generate_fastqc_for: ["subsampling"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
 
-reads__subsampling:
+reads__subsampling__seqtk:
   seed: 1
   n_reads: 500
   reduce_memory: true

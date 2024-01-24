@@ -9,29 +9,9 @@ definitions:
         type: string
         description: "Path to the PEP file containing the info how to load the data."
         default: "config/pep/config.yaml"
-      flow:
-        type: array
-        description: "Order of read processing steps."
-        default: []
-        items:
-          type: string
-          enum:
-            - "decontaminated"
-            - "trimmed"
-            - "subsampled"
-            - "deduplicated"
-      fastqc_reports:
-        type: array
-        description: "Steps for which FastQC report should be generated."
-        default: []
-        items:
-          type: string
-          enum:
-            - "original"
-            - "decontaminated"
-            - "trimmed"
-            - "subsampled"
-            - "deduplicated"
+      reads:
+        type: object
+        "$ref": "#/definitions/ReadsProcessing"
       max_threads:
         type: integer
         description: "Number of maximum threads to use in jobs."
@@ -42,15 +22,15 @@ definitions:
         description: "Maximum memory in megabytes to allocate for any job."
         Minimum: 2048
         default: 2048
-      reads__trimming:
+      reads__trimming__cutadapt:
         type: object
-        "$ref": "#/definitions/ReadsTrimming"
-      reads__subsampling:
+        "$ref": "#/definitions/ReadsTrimmingCutadapt"
+      reads__subsampling__seqtk:
         type: object
-        "$ref": "#/definitions/ReadsSubsampling"
-      reads__decontamination:
+        "$ref": "#/definitions/ReadsSubsamplingSeqtk"
+      reads__decontamination__kraken:
         type: object
-        "$ref": "#/definitions/ReadsDecontamination"
+        "$ref": "#/definitions/ReadsDecontaminationKraken"
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -69,38 +49,40 @@ definitions:
       - pepfile
       - max_threads
       - max_mem_mb
-      - flow
-      - fastqc_reports
+      - reads
     allOf:
       - if:
           properties:
-            flow:
-              contains:
-                type: "string"
-                const: "decontaminated"
+            reads:
+              decontamination:
+                contains:
+                  type: "string"
+                  const: "kraken"
         then:
           required:
-            - reads__decontamination
+            - reads__decontamination__kraken
       - if:
           properties:
-            flow:
-              contains:
-                type: "string"
-                const: "trimmed"
+            reads:
+              trimming:
+                contains:
+                  type: "string"
+                  const: "cutadapt"
         then:
           required:
-            - reads__trimming
+            - reads__trimming__cutadapt
       - if:
           properties:
-            flow:
-              contains:
-                type: "string"
-                const: "subsampled"
+            reads:
+              subsampling:
+                contains:
+                  type: "string"
+                  const: "seqtk"
         then:
           required:
-            - reads__subsampling
+            - reads__subsampling__seqtk
     title: Reads
-  ReadsSubsampling:
+  ReadsSubsamplingSeqtk:
     type: object
     additionalProperties: false
     properties:
@@ -117,7 +99,7 @@ definitions:
       - n_reads
       - reduce_memory
     title: ReadsSubsampling
-  ReadsDecontamination:
+  ReadsDecontaminationKraken:
     type: object
     additionalProperties: false
     properties:
@@ -150,7 +132,7 @@ definitions:
       - exclude_ancestors
       - save_memory
     title: ReadsDecontamination
-  ReadsTrimming:
+  ReadsTrimmingCutadapt:
     type: object
     additionalProperties: false
     properties:
@@ -159,44 +141,68 @@ definitions:
         "$ref": "#/definitions/AdapterRemoval"
         default: {}
       shorten_to_length:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Shorten each read to the specified length. Corresponds to the cutadapt length parameter."
-      cut_from_start:
-        type: integer
+        minimum: 0
+      cut_from_start_r2:
+        type: [integer, "null"]
         description: "Optional. Removes a specified number of bases from the beginning of the read."
-      cut_from_end:
-        type: integer
+        minimum: 0
+      cut_from_end_r1:
+        type: [integer, "null"]
         description: "Optional. Removes a specified number of bases from the end of the read."
+        minimum: 0
+      cut_from_start_r1:
+        type: [integer, "null"]
+        description: "Optional. Removes a specified number of bases from the beginning of the read."
+        minimum: 0
+      cut_from_end_r2:
+        type: [integer, "null"]
+        description: "Optional. Removes a specified number of bases from the end of the read."
+        minimum: 0
       max_n_bases:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Removes reads with more N bases than the specified number."
+        minimum: 0
       max_expected_errors:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Discard reads whose expected number of errors exceeds this value."
+        minimum: 0
       max_length_r1:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Discards R1 reads longer than this."
+        minimum: 0
+      trim_N_bases_on_ends:
+        type: [boolean, "null"]
+        description: "Optional. Set to true to trim N bases on ends."
       max_length_r2:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Discards R2 reads longer than this."
+        minimum: 0
       min_length_r1:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+        minimum: 0
       min_length_r2:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+        minimum: 0
       quality_cutoff_from_3_end_r1:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Removes lower quality bases from the 3' end of the R1 read."
+        minimum: 0
       quality_cutoff_from_5_end_r1:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Removes lower quality bases from the 5' end of the R1 read."
+        minimum: 0
       quality_cutoff_from_3_end_r2:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Removes lower quality bases from the 3' end of the R2 read."
+        minimum: 0
       quality_cutoff_from_5_end_r2:
-        type: integer
+        type: [integer, "null"]
         description: "Optional. Removes lower quality bases from the 5' end of the R2 read."
+        minimum: 0
     required:
       - adapter_removal
     title: ReadsTrimming
@@ -262,6 +268,40 @@ definitions:
         - keep_trimmed_only
         - read_location
     title: AdapterRemoval
+  ReadsProcessing:
+    additionalProperties: true
+    subsampling:
+      type: string
+      description: "Specification of subsampling method."
+      enum:
+        - "seqtk"
+    trimming:
+      type: string
+      description: "Specification of trimming method."
+      enum:
+        - "cutadapt"
+    decontamination:
+      type: string
+      description: "Specification of decontamination method."
+      enum:
+        - "kraken"
+    deduplication:
+      description: "Specification of deduplication method."
+      type: string
+      enum:
+        - "fastuniq"
+    _generate_fastqc_for:
+      type: array
+      default: []
+      enum:
+        - "decontamination"
+        - "trimming"
+        - "subsampling"
+        - "deduplication"
+        - "original"
+    title: ReadsProcessing
+    required:
+      - _generate_fastqc_for
   Resources:
     additionalProperties: true
     reads__trimming_mem_mb:

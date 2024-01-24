@@ -1,37 +1,45 @@
-reads__processing_flow:
-  - "subsampled"
-  - "trimmed"
-  - "decontaminated"
-  - "deduplicated"
-
-fastqc_reports:
-  - "original"
-  - "deduplicated"
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: "seqtk" # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
+  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  deduplication: "fastuniq" # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
+  _generate_fastqc_for: ["deduplicated"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
 
-reads__subsampling:
+reads__subsampling__seqtk:
   seed: 1
-  n_reads: 500
+  n_reads: 1
   reduce_memory: true
 
-reads__trimming:
-  shorten_to_length: 500 # OPT shorten to this length.
-  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
-  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
-  min_length_r1: 35 # OPT, minimum R1 read length. The fourth step.
-  min_length_r2: 35 # OPT, minimum R2 read length. The fourth step.
-  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
-  adapter_removal:
-    do: true
-    action: "trim" # Defines an action to perform with the found adapter.
-    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front',
-    adapters_fasta: "test_data/adapters.fa" # Adapters fasta used for adapter trimming.
+reads__trimming__cutadapt:
+  # 1st stage - trimming
+  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_5_end_r1: 20 # cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # cutoff on 3' end of R2 read. The second step.
 
-reads__decontamination:
+  # 2nd stage - Adapter removal
+  adapter_removal: # OPT - set "do" to false to skip this step.
+    do: false # If true, all below options are required. Else, they are ignored/can be deleted.
+
+  # 3rd stage - post adapter trimming
+  shorten_to_length: null # OPT - both R1 and R2 are shortened to this length.
+  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
+
+  # 4th stage - Filtering
+  min_length_r1: null # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  min_length_r2: null # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_n_bases: null # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
+  max_expected_errors: null # OPT - Discard read if R1 or R2 has more expected errors than this.
+
+reads__decontamination__kraken:
   kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.

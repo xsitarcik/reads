@@ -11,12 +11,12 @@ localrules:
 include: "rules/common.smk"
 
 
-for step in config["reads__processing_flow"]:
+for step, tool in [item for item in config["reads"].items() if not item[0].startswith("_")]:
 
-    include: f"rules/{step}.smk"
+    include: f"rules/{step}/{tool}.smk"
 
 
-if config["fastqc_reports"]:
+if config.get("_generate_fastqc_for", "wtf"):
 
     include: "rules/fastqc.smk"
 

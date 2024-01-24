@@ -1,6 +1,6 @@
 rule fastuniq__deduplicate_reads:
     input:
-        unpack(get_reads_for_deduplication),
+        unpack(infer_fastqs_for_deduplication),
     output:
         r1=temp("results/reads/deduplicated/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/deduplicated/{sample}_R2.fastq.gz"),
