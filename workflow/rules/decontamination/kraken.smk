@@ -10,7 +10,7 @@ rule curl__download_kraken_db:
     log:
         "{prefix_dir}/logs/download.log",
     conda:
-        "../envs/curl.yaml"
+        "../../envs/curl.yaml"
     shell:
         "(mkdir -p {params.dirpath} && curl -SL {params.url} | tar zxvf - -C {params.dirpath}) > {log} 2>&1"
 
@@ -29,7 +29,7 @@ rule kraken__analysis:
     log:
         "logs/kraken/analysis/{sample}.log",
     conda:
-        "../envs/kraken2.yaml"
+        "../../envs/kraken2.yaml"
     shell:
         "(kraken2 --db {params.db_dir} --threads {threads} --paired --gzip-compressed"
         " {params.save_memory} --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
