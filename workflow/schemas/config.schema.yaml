@@ -269,71 +269,79 @@ definitions:
         - read_location
     title: AdapterRemoval
   ReadsProcessing:
+    type: object
     additionalProperties: true
-    subsampling:
-      type: string
-      description: "Specification of subsampling method."
-      enum:
-        - "seqtk"
-    trimming:
-      type: string
-      description: "Specification of trimming method."
-      enum:
-        - "cutadapt"
-    decontamination:
-      type: string
-      description: "Specification of decontamination method."
-      enum:
-        - "kraken"
-    deduplication:
-      description: "Specification of deduplication method."
-      type: string
-      enum:
-        - "fastuniq"
-    _generate_fastqc_for:
-      type: array
-      default: []
-      enum:
-        - "decontamination"
-        - "trimming"
-        - "subsampling"
-        - "deduplication"
-        - "original"
+    properties:
+      subsampling:
+        type: string
+        description: "Specification of subsampling method."
+        enum:
+          - "seqtk"
+      trimming:
+        type: string
+        description: "Specification of trimming method."
+        enum:
+          - "cutadapt"
+      decontamination:
+        type: string
+        description: "Specification of decontamination method."
+        enum:
+          - "kraken"
+      deduplication:
+        description: "Specification of deduplication method."
+        type: string
+        enum:
+          - "fastuniq"
+      _generate_fastqc_for:
+        type: array
+        default: []
+        items:
+          type: string
+          enum:
+            - "decontamination"
+            - "trimming"
+            - "subsampling"
+            - "deduplication"
+            - "original"
     title: ReadsProcessing
     required:
       - _generate_fastqc_for
   Resources:
+    type: object
     additionalProperties: true
-    reads__trimming_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for trimming."
-      default: 2048
-    fastqc_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for fastqc."
-      default: 2048
+    properties:
+      reads__trimming_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for trimming."
+        default: 2048
+      fastqc_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for fastqc."
+        default: 2048
     title: Resources
     required:
       - reads__trimming_mem_mb
       - fastqc_mem_mb
   Threads:
+    type: object
     additionalProperties: true
-    reads__trimming:
-      type: integer
-      default: 1
-      description: "Number of threads to use for trimming."
-    reads__deduplication:
-      type: integer
-      default: 1
-      description: "Number of threads to use for deduplication."
-    reads__decontamination:
-      type: integer
-      default: 1
-      description: "Number of threads to use for decontamination."
-    fastqc:
-      type: integer
-      default: 1
-      description: "Number of threads to use for fastqc."
+    properties:
+      reads__trimming:
+        type: integer
+        default: 1
+        description: "Number of threads to use for trimming."
+      reads__deduplication:
+        type: integer
+        default: 1
+        description: "Number of threads to use for deduplication."
+      reads__decontamination:
+        type: integer
+        default: 1
+        description: "Number of threads to use for decontamination."
+      fastqc:
+        type: integer
+        default: 1
+        description: "Number of threads to use for fastqc."
     title: Threads
     required:
       - reads__trimming

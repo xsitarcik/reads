@@ -3,7 +3,7 @@ reads: # Specify the order and methods for each read processing step. If no meth
   trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
   decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
   deduplication: "fastuniq" # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
-  _generate_fastqc_for: ["deduplicated"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+  _generate_fastqc_for: ["deduplication"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
 
