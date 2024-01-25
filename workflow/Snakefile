@@ -3,20 +3,15 @@ from snakemake.utils import min_version
 min_version("7.25.0")
 
 
-localrules:
-    all,
-    curl__download_kraken_db,
-
-
 include: "rules/common.smk"
 
 
-for step in config["reads__processing_flow"]:
+for step, tool in [item for item in config["reads"].items() if item[1] and not item[0].startswith("_")]:
 
-    include: f"rules/{step}.smk"
+    include: f"rules/{step}/{tool}.smk"
 
 
-if config["fastqc_reports"]:
+if config["reads"]["_generate_fastqc_for"]:
 
     include: "rules/fastqc.smk"
 
@@ -28,3 +23,4 @@ wildcard_constraints:
 rule all:
     input:
         **get_outputs(),
+    localrule: True

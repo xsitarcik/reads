@@ -12,7 +12,7 @@ rule fastqc__quality_report:
         zip="results/reads/{step}/fastqc/{sample}_{pair}.zip",
         qc_data="results/reads/{step}/fastqc/{sample}_{pair}/fastqc_data.txt",
         summary_txt="results/reads/{step}/fastqc/{sample}_{pair}/summary.txt",
-    threads: min(config["threads"]["fastqc"], config["max_threads"])
+    threads: min(config["threads"]["reads__fastqc"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_fastqc,
     log:

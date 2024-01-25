@@ -1,13 +1,12 @@
-reads__processing_flow:
-  - "decontaminated"
-
-fastqc_reports:
-  - "original"
-  - "decontaminated"
-
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  _generate_fastqc_for: ["decontamination"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+  deduplication: null
+  trimming: null
+  subsampling: null
 ### HYPERPARAMETERS #############################
 
-reads__decontamination:
+reads__decontamination__kraken:
   kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
   # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
@@ -22,8 +21,8 @@ max_threads: 2
 max_mem_mb: 6192
 
 resources:
-  fastqc_mem_mb: 2048
+  reads__fastqc_mem_mb: 2048
 
 threads:
-  fastqc: 1
+  reads__fastqc: 1
   reads__decontamination: 8
