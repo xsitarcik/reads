@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.0](https://github.com/xsitarcik/reads/compare/v2.0.1...v3.0.0) (2024-01-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* changed workflow to be method specific
+
+### Features
+
+* changed workflow to be method specific ([43ae243](https://github.com/xsitarcik/reads/commit/43ae24301194d4816774952ff96c7cc6664cf075))
+* config edited to be independent and clear for reads only ([27546a4](https://github.com/xsitarcik/reads/commit/27546a4631d344a87d8a2b0730d076f1710b0225))
+
 ## [2.0.1](https://github.com/xsitarcik/reads/compare/v2.0.0...v2.0.1) (2024-01-05)
 
 
