@@ -39,7 +39,7 @@ def get_fastq_paths(sample: str):
 
 
 def get_read_processing_steps() -> list[str]:
-    return [step for step in config["reads"] if not step.startswith("_")]
+    return [step for step in config["reads"] if config["reads"][step] and not step.startswith("_")]
 
 
 def get_last_step() -> str | None:
@@ -145,7 +145,7 @@ def parse_adapter_removal_params(adapter_config):
         args_lst.append("--discard-untrimmed")
 
     args_lst.append(f"--action {adapter_config['action']}")
-    args_lst.append(f"--overlap {cadapter_config['overlap']}")
+    args_lst.append(f"--overlap {adapter_config['overlap']}")
     args_lst.append(f"--times {adapter_config['times']}")
     args_lst.append(f"--error-rate {adapter_config['error_rate']}")
     return args_lst
@@ -237,4 +237,4 @@ def get_mem_mb_for_trimming(wildcards, attempt):
 
 
 def get_mem_mb_for_fastqc(wildcards, attempt):
-    return min(config["max_mem_mb"], config["resources"]["fastqc_mem_mb"] * attempt)
+    return min(config["max_mem_mb"], config["resources"]["reads__fastqc_mem_mb"] * attempt)

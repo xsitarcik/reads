@@ -1,5 +1,8 @@
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
   subsampling: "seqtk" # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  deduplication: null
+  trimming: null
+  decontamination: null
   _generate_fastqc_for: ["subsampling"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
@@ -15,7 +18,7 @@ max_threads: 2
 max_mem_mb: 6192
 
 resources:
-  fastqc_mem_mb: 2048
+  reads__fastqc_mem_mb: 2048
 
 threads:
-  fastqc: 1
+  reads__fastqc: 1

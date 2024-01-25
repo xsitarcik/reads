@@ -61,11 +61,11 @@ max_threads: 8
 max_mem_mb: 16384
 
 resources:
-  reads_trimming_mem_mb: 4096
-  fastqc_mem_mb: 2048
+  reads__trimming_mem_mb: 4096
+  reads__fastqc_mem_mb: 2048
 
 threads:
-  reads_trimming: 4
-  reads_deduplication: 4
-  reads_decontamination: 8
-  fastqc: 1
+  reads__trimming: 4
+  reads__deduplication: 4
+  reads__decontamination: 8
+  reads__fastqc: 1

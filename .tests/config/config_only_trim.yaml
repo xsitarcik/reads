@@ -1,6 +1,8 @@
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: null
   trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
   decontamination: null # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  deduplication: null
   _generate_fastqc_for: ["trimming"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 ### HYPERPARAMETERS #############################
@@ -46,8 +48,8 @@ max_mem_mb: 6192
 
 resources:
   reads__trimming_mem_mb: 4096
-  fastqc_mem_mb: 2048
+  reads__fastqc_mem_mb: 2048
 
 threads:
   reads__trimming: 4
-  fastqc: 1
+  reads__fastqc: 1

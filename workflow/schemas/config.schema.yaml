@@ -34,17 +34,9 @@ definitions:
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: { "reads__trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
       threads:
         type: object
         "$ref": "#/definitions/Threads"
-        default:
-          {
-            "reads__trimming": 1,
-            "fastqc": 1,
-            "reads__decontamination": 1,
-            "reads__deduplication": 1,
-          }
     required:
       - pepfile
       - max_threads
@@ -55,9 +47,9 @@ definitions:
           properties:
             reads:
               decontamination:
-                contains:
-                  type: "string"
-                  const: "kraken"
+                const: "kraken"
+            required:
+              - decontamination
         then:
           required:
             - reads__decontamination__kraken
@@ -65,9 +57,9 @@ definitions:
           properties:
             reads:
               trimming:
-                contains:
-                  type: "string"
-                  const: "cutadapt"
+                const: "cutadapt"
+            required:
+              - trimming
         then:
           required:
             - reads__trimming__cutadapt
@@ -75,9 +67,9 @@ definitions:
           properties:
             reads:
               subsampling:
-                contains:
-                  type: "string"
-                  const: "seqtk"
+                const: "seqtk"
+            required:
+              - subsampling
         then:
           required:
             - reads__subsampling__seqtk
@@ -273,25 +265,29 @@ definitions:
     additionalProperties: true
     properties:
       subsampling:
-        type: string
+        type: [string, "null"]
         description: "Specification of subsampling method."
         enum:
           - "seqtk"
+          - null
       trimming:
-        type: string
+        type: [string, "null"]
         description: "Specification of trimming method."
         enum:
           - "cutadapt"
+          - null
       decontamination:
-        type: string
+        type: [string, "null"]
         description: "Specification of decontamination method."
         enum:
           - "kraken"
+          - null
       deduplication:
+        type: [string, "null"]
         description: "Specification of deduplication method."
-        type: string
         enum:
           - "fastuniq"
+          - null
       _generate_fastqc_for:
         type: array
         default: []
@@ -314,14 +310,14 @@ definitions:
         type: integer
         description: "Memory in MB to reserve for trimming."
         default: 2048
-      fastqc_mem_mb:
+      reads__fastqc_mem_mb:
         type: integer
         description: "Memory in MB to reserve for fastqc."
         default: 2048
     title: Resources
     required:
       - reads__trimming_mem_mb
-      - fastqc_mem_mb
+      - reads__fastqc_mem_mb
   Threads:
     type: object
     additionalProperties: true
@@ -338,13 +334,13 @@ definitions:
         type: integer
         default: 1
         description: "Number of threads to use for decontamination."
-      fastqc:
+      reads__fastqc:
         type: integer
         default: 1
         description: "Number of threads to use for fastqc."
     title: Threads
     required:
       - reads__trimming
-      - fastqc
+      - reads__fastqc
       - reads__decontamination
       - reads__deduplication

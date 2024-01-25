@@ -55,10 +55,10 @@ max_mem_mb: 6192
 
 resources:
   reads__trimming_mem_mb: 4096
-  fastqc_mem_mb: 2048
+  reads__fastqc_mem_mb: 2048
 
 threads:
   reads__trimming: 4
-  fastqc: 1
+  reads__fastqc: 1
   reads__deduplication: 4
   reads__decontamination: 8
