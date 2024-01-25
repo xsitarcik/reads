@@ -6,14 +6,10 @@
 ### ⚠ BREAKING CHANGES
 
 * changed workflow to be method specific
-* changed workflow to be method specific
-* changed workflow to be method specific
 
 ### Features
 
 * changed workflow to be method specific ([43ae243](https://github.com/xsitarcik/reads/commit/43ae24301194d4816774952ff96c7cc6664cf075))
-* changed workflow to be method specific ([d40f984](https://github.com/xsitarcik/reads/commit/d40f984df064bfc3c2dc227cca96fc3c0709d2e9))
-* changed workflow to be method specific ([bd685f4](https://github.com/xsitarcik/reads/commit/bd685f44ebeea7fda84a62f4e0ba7b5df8788c65))
 * config edited to be independent and clear for reads only ([27546a4](https://github.com/xsitarcik/reads/commit/27546a4631d344a87d8a2b0730d076f1710b0225))
 
 ## [2.0.1](https://github.com/xsitarcik/reads/compare/v2.0.0...v2.0.1) (2024-01-05)
