@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/xsitarcik/reads/compare/v3.0.0...v3.1.0) (2024-01-26)
+
+
+### Features
+
+* extended schema to dynamically request other elements ([6d0e243](https://github.com/xsitarcik/reads/commit/6d0e243b77c9d1dfe32e218a571dc75afeb6bff7))
+
+
+### Bug Fixes
+
+* default schema values from config are for description only as intended, to prevent user from magic situations ([2b3b39b](https://github.com/xsitarcik/reads/commit/2b3b39b5a2b986b08c7801ce2a514418eca13135))
+
 ## [3.0.0](https://github.com/xsitarcik/reads/compare/v2.0.1...v3.0.0) (2024-01-25)
 
 
