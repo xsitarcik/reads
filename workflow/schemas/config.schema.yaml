@@ -1,4 +1,4 @@
-"$schema": http://json-schema.org/draft-07/schema#
+"$schema": https://json-schema.org/draft/2020-12/schema
 "$ref": "#/definitions/Reads"
 definitions:
   Reads:
@@ -38,7 +38,6 @@ definitions:
         type: object
         "$ref": "#/definitions/Threads"
     required:
-      - pepfile
       - max_threads
       - max_mem_mb
       - reads
@@ -46,33 +45,88 @@ definitions:
       - if:
           properties:
             reads:
-              decontamination:
-                const: "kraken"
-            required:
-              - decontamination
+              properties:
+                decontamination:
+                  type: string
+                  const: "kraken"
         then:
           required:
             - reads__decontamination__kraken
+          message: "reads__decontamination__kraken is required if reads->decontamination is set to kraken"
       - if:
           properties:
             reads:
-              trimming:
-                const: "cutadapt"
-            required:
-              - trimming
+              properties:
+                trimming:
+                  type: string
+                  const: "cutadapt"
         then:
           required:
             - reads__trimming__cutadapt
+          message: "reads__trimming__cutadapt is required if reads->trimming is set to cutadapt"
       - if:
           properties:
             reads:
-              subsampling:
-                const: "seqtk"
-            required:
-              - subsampling
+              properties:
+                subsampling:
+                  type: string
+                  const: "seqtk"
         then:
           required:
             - reads__subsampling__seqtk
+          message: "reads__subsampling__seqtk is required if reads->subsampling is set to seqtk"
+
+      # request resources based on specified tasks
+      - if:
+          properties:
+            reads:
+              properties:
+                _generate_fastqc_for:
+                  min_items: 1
+        then:
+          properties:
+            threads:
+              required:
+                - reads__fastqc
+            resources:
+              required:
+                - reads__fastqc_mem_mb
+      - if:
+          properties:
+            reads:
+              properties:
+                trimming:
+                  type: string
+        then:
+          properties:
+            threads:
+              required:
+                - reads__trimming
+            resources:
+              required:
+                - reads__trimming_mem_mb
+      - if:
+          properties:
+            reads:
+              properties:
+                decontamination:
+                  type: string
+        then:
+          properties:
+            threads:
+              required:
+                - reads__decontamination
+      - if:
+          properties:
+            reads:
+              properties:
+                deduplication:
+                  type: string
+        then:
+          properties:
+            threads:
+              required:
+                - reads__deduplication
     title: Reads
   ReadsSubsamplingSeqtk:
     type: object
@@ -299,6 +353,47 @@ definitions:
             - "subsampling"
             - "deduplication"
             - "original"
+    allOf:
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "deduplication"
+        then:
+          properties:
+            deduplication:
+              type: string
+              description: "Reads->Deduplication is required if fastqc is requested for deduplication"
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "trimming"
+        then:
+          properties:
+            trimming:
+              type: string
+              description: "Reads-trimming is required if fastqc is requested for trimming"
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "subsampling"
+        then:
+          properties:
+            subsampling:
+              type: string
+              description: "Reads->subsampling is required if fastqc is requested for subsampling"
+      - if:
+          properties:
+            _generate_fastqc_for:
+              contains:
+                const: "decontamination"
+        then:
+          properties:
+            decontamination:
+              type: string
+              description: "Reads->decontamination is required if fastqc is requested for decontamination"
     title: ReadsProcessing
     required:
       - _generate_fastqc_for
@@ -317,30 +412,24 @@ definitions:
     title: Resources
     required:
       - reads__trimming_mem_mb
-      - reads__fastqc_mem_mb
   Threads:
     type: object
     additionalProperties: true
     properties:
       reads__trimming:
         type: integer
-        default: 1
         description: "Number of threads to use for trimming."
+        default: 1
       reads__deduplication:
         type: integer
-        default: 1
         description: "Number of threads to use for deduplication."
+        default: 1
       reads__decontamination:
         type: integer
-        default: 1
         description: "Number of threads to use for decontamination."
+        default: 1
       reads__fastqc:
         type: integer
-        default: 1
         description: "Number of threads to use for fastqc."
+        default: 1
     title: Threads
-    required:
-      - reads__trimming
-      - reads__fastqc
-      - reads__decontamination
-      - reads__deduplication
