@@ -4,10 +4,10 @@ from snakemake.utils import validate
 configfile: "config/config.yaml"
 
 
-validate(config, "../schemas/config.schema.yaml")
+validate(config, "../schemas/config.schema.yaml", set_default=False)
 
 
-pepfile: config["pepfile"]
+pepfile: config.get("pepfile", "config/pep/config.yaml")
 
 
 validate(pep.sample_table, "../schemas/samples.schema.yaml")
