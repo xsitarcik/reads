@@ -82,7 +82,7 @@ definitions:
             reads:
               properties:
                 _generate_fastqc_for:
-                  min_items: 1
+                  minItems: 1
         then:
           properties:
             threads:
@@ -156,7 +156,7 @@ definitions:
       exclude_taxa_ids:
         type: array
         description: "list of taxonomy IDs to exclude."
-        min_items: 1
+        minItems: 1
         items:
           type: integer
       exclude_children:
