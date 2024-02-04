@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/xsitarcik/reads/compare/v3.1.0...v3.1.1) (2024-02-04)
+
+
+### Bug Fixes
+
+* correct parsing for optional cutadapt params ([ed7cb61](https://github.com/xsitarcik/reads/commit/ed7cb61b92974da0486f426bcc474cd9b841a068))
+
 ## [3.1.0](https://github.com/xsitarcik/reads/compare/v3.0.0...v3.1.0) (2024-01-26)
 
 
