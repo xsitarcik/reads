@@ -410,8 +410,6 @@ definitions:
         description: "Memory in MB to reserve for fastqc."
         default: 2048
     title: Resources
-    required:
-      - reads__trimming_mem_mb
   Threads:
     type: object
     additionalProperties: true
