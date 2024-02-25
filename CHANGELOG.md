@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/xsitarcik/reads/compare/v3.1.1...v3.1.2) (2024-02-25)
+
+
+### Bug Fixes
+
+* removed requirement for dynamic parameter ([e0cb37a](https://github.com/xsitarcik/reads/commit/e0cb37a9044a22c1be15675bde1e1cda005d4bf3))
+
 ## [3.1.1](https://github.com/xsitarcik/reads/compare/v3.1.0...v3.1.1) (2024-02-04)
 
 
