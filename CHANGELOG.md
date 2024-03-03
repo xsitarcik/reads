@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.3](https://github.com/xsitarcik/reads/compare/v3.1.2...v3.1.3) (2024-03-03)
+
+
+### Bug Fixes
+
+* added validation for cutadapt adapters file ([fff224d](https://github.com/xsitarcik/reads/commit/fff224d6c1f1d4f96dc5612a1fccee475a805585))
+
 ## [3.1.2](https://github.com/xsitarcik/reads/compare/v3.1.1...v3.1.2) (2024-02-25)
 
 
