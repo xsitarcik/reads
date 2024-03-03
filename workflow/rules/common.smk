@@ -13,6 +13,18 @@ pepfile: config.get("pepfile", "config/pep/config.yaml")
 validate(pep.sample_table, "../schemas/samples.schema.yaml")
 
 
+def validate_dynamic_config():
+    if (
+        config["reads"].get("trimming", "") == "cutadapt"
+        and config["reads__trimming__cutadapt"]["adapter_removal"]["do"]
+    ):
+        if not os.path.exists(config["reads__trimming__cutadapt"]["adapter_removal"]["adapters_fasta"]):
+            adapter_file = config["reads__trimming__cutadapt"]["adapter_removal"]["adapters_fasta"]
+            raise ValueError(f"Adapter removal is enabled, but the {adapter_file=} does not exist")
+
+
+validate_dynamic_config()
+
 ### Layer for adapting other workflows  ###############################################################################
 
 
