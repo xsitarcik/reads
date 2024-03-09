@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.5](https://github.com/xsitarcik/reads/compare/v3.1.4...v3.1.5) (2024-03-09)
+
+
+### Bug Fixes
+
+* replaced index locating with iloc ([8fed537](https://github.com/xsitarcik/reads/commit/8fed5377659983d0ac369005da95271272560bad))
+
 ## [3.1.4](https://github.com/xsitarcik/reads/compare/v3.1.3...v3.1.4) (2024-03-09)
 
 
