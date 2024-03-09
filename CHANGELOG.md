@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.7](https://github.com/xsitarcik/reads/compare/v3.1.6...v3.1.7) (2024-03-09)
+
+
+### Bug Fixes
+
+* temp flag used only when lasts tep ([2d78698](https://github.com/xsitarcik/reads/commit/2d786981006e02f732c0beda81652d27f01bba4b))
+
 ## [3.1.6](https://github.com/xsitarcik/reads/compare/v3.1.5...v3.1.6) (2024-03-09)
 
 
