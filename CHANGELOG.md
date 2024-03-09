@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.4](https://github.com/xsitarcik/reads/compare/v3.1.3...v3.1.4) (2024-03-09)
+
+
+### Bug Fixes
+
+* marked temp outputs all steps ([03c445e](https://github.com/xsitarcik/reads/commit/03c445eec9d175ae2adb89c447f911747b622859))
+
 ## [3.1.3](https://github.com/xsitarcik/reads/compare/v3.1.2...v3.1.3) (2024-03-03)
 
 
