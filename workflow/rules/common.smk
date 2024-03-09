@@ -111,6 +111,13 @@ def get_outputs():
     return outputs
 
 
+def conf_temp(output_file):
+    outputs = get_outputs()
+    if output_file in outputs["reads"]:
+        return output_file
+    return temp(output_file)
+
+
 def infer_fastq_path(wildcards):
     if wildcards.step != "original":
         return "results/reads/{step}/{sample}_{pair}.fastq.gz"
