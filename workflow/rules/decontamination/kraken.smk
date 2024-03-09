@@ -43,6 +43,8 @@ rule kraken__decontaminate:
     output:
         r1=temp("results/reads/decontamination/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/decontamination/{sample}_R2.fastq.gz"),
+        temp_r1=temp("results/reads/decontamination/{sample}_R1.fastq"),
+        temp_r2=temp("results/reads/decontamination/{sample}_R2.fastq"),
         std_out=temp("results/reads/decontamination/{sample}_decontamination.out"),
     params:
         taxid=" ".join(str(taxa_id) for taxa_id in config["reads__decontamination__kraken"]["exclude_taxa_ids"]),
@@ -50,4 +52,4 @@ rule kraken__decontaminate:
     log:
         "logs/kraken/decontaminate/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.6/wrappers/kraken/decontaminate_pe"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/kraken/decontaminate_pe"
