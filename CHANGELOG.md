@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.6](https://github.com/xsitarcik/reads/compare/v3.1.5...v3.1.6) (2024-03-09)
+
+
+### Bug Fixes
+
+* file marked as temp only if not in outputs ([56a9028](https://github.com/xsitarcik/reads/commit/56a9028dc5f0bbd44b83ef35fad67eb05bd3ebff))
+
 ## [3.1.5](https://github.com/xsitarcik/reads/compare/v3.1.4...v3.1.5) (2024-03-09)
 
 
