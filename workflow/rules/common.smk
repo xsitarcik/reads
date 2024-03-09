@@ -111,9 +111,26 @@ def get_outputs():
     return outputs
 
 
-def conf_temp(output_file):
-    outputs = get_outputs()
-    if output_file in outputs["reads"]:
+def temp_decontamination(output_file):
+    if get_last_step() == "decontamination":
+        return output_file
+    return temp(output_file)
+
+
+def temp_trimming(output_file):
+    if get_last_step() == "trimming":
+        return output_file
+    return temp(output_file)
+
+
+def temp_deduplication(output_file):
+    if get_last_step() == "deduplication":
+        return output_file
+    return temp(output_file)
+
+
+def temp_subsampling(output_file):
+    if get_last_step() == "subsampling":
         return output_file
     return temp(output_file)
 
