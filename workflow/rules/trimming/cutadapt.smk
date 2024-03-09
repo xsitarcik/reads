@@ -2,8 +2,8 @@ rule cutadapt__trim_reads_pe:
     input:
         unpack(infer_fastqs_for_trimming),
     output:
-        fastq1=conf_temp("results/reads/trimming/{sample}_R1.fastq.gz"),
-        fastq2=conf_temp("results/reads/trimming/{sample}_R2.fastq.gz"),
+        fastq1=temp_trimming("results/reads/trimming/{sample}_R1.fastq.gz"),
+        fastq2=temp_trimming("results/reads/trimming/{sample}_R2.fastq.gz"),
         qc="results/reads/trimming/{sample}.qc.txt",
     params:
         extra=get_cutadapt_extra_pe(),

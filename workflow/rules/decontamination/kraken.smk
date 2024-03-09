@@ -41,8 +41,8 @@ rule kraken__decontaminate:
         kraken_output="results/kraken/{sample}.kraken",
         kraken_report="results/kraken/{sample}.kreport2",
     output:
-        r1=conf_temp("results/reads/decontamination/{sample}_R1.fastq.gz"),
-        r2=conf_temp("results/reads/decontamination/{sample}_R2.fastq.gz"),
+        r1=temp_decontamination("results/reads/decontamination/{sample}_R1.fastq.gz"),
+        r2=temp_decontamination("results/reads/decontamination/{sample}_R2.fastq.gz"),
         temp_r1=temp("results/reads/decontamination/{sample}_R1.fastq"),
         temp_r2=temp("results/reads/decontamination/{sample}_R2.fastq"),
         std_out=temp("results/reads/decontamination/{sample}_decontamination.out"),
