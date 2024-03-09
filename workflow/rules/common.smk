@@ -75,8 +75,8 @@ def get_reads_for_step(step: str, sample: str):
         }
     paths = get_fastq_paths(sample)
     return {
-        "r1": paths[0],
-        "r2": paths[1],
+        "r1": paths["fq1"],
+        "r2": paths["fq2"],
     }
 
 
@@ -115,9 +115,9 @@ def infer_fastq_path(wildcards):
     if wildcards.step != "original":
         return "results/reads/{step}/{sample}_{pair}.fastq.gz"
     if "pair" not in wildcards or wildcards.pair == "R1":
-        return get_one_fastq_file(wildcards.sample, read_pair="fq1")[0]
+        return get_one_fastq_file(wildcards.sample, read_pair="fq1").iloc[0]
     elif wildcards.pair == "R2":
-        return get_one_fastq_file(wildcards.sample, read_pair="fq2")[0]
+        return get_one_fastq_file(wildcards.sample, read_pair="fq2").iloc[0]
 
 
 def infer_fastqs_for_decontamination(wildcards):
