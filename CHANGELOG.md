@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.8](https://github.com/xsitarcik/reads/compare/v3.1.7...v3.1.8) (2024-03-31)
+
+
+### Bug Fixes
+
+* bumped cutadapt wrapper version ([9aa75b4](https://github.com/xsitarcik/reads/commit/9aa75b4e9e3159cbd82c8ddc7147769190ca5043))
+
 ## [3.1.7](https://github.com/xsitarcik/reads/compare/v3.1.6...v3.1.7) (2024-03-09)
 
 
