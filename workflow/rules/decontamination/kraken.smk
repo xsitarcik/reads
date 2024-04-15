@@ -64,7 +64,7 @@ rule krona__update_taxonomy:
     log:
         "{prefix_dir}/logs/update_taxonomy.log",
     conda:
-        "../envs/kraken2.yaml"
+        "../../envs/kraken2.yaml"
     localrule: True
     shell:
         "ktUpdateTaxonomy.sh {params.tax_dir} 1> {log} 2>&1"
@@ -82,6 +82,6 @@ rule kraken__krona_chart:
     log:
         "logs/kraken/krona_chart/{sample}.log",
     conda:
-        "../envs/kraken2.yaml"
+        "../../envs/kraken2.yaml"
     shell:
         "ktImportTaxonomy {params.extra} -tax {params.tax_dir} -o {output} {input.kraken_output} 1> {log} 2>&1"
