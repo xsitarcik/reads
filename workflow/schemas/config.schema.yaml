@@ -171,13 +171,33 @@ definitions:
         type: boolean
         description: "if true, kraken limits RAM memory usage but sacrifices speed."
         default: true
+      generate_krona:
+        type: boolean
+        description: "If true, krona is generated from kraken report"
+        default: false
+      krona_dir:
+        type: [string, "null"]
+        description: "Directory where krona dataset is located or will be downloaded."
+        default: "null"
     required:
       - exclude_taxa_ids
       - kraken_dir
       - exclude_children
       - exclude_ancestors
       - save_memory
+      - generate_krona
+      - krona_dir
     title: ReadsDecontamination
+    if:
+      properties:
+        generate_krona:
+          const: true
+    then:
+      properties:
+        krona_dir:
+          type: string
+          pattern: '.*/\d{4}-\d{2}-\d{2}\/?$'
+      message: "reads__decontamination__kraken->krona_dir must be valid if generate_krona is True"
   ReadsTrimmingCutadapt:
     type: object
     additionalProperties: false

@@ -53,3 +53,35 @@ rule kraken__decontaminate:
         "logs/kraken/decontaminate/{sample}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/kraken/decontaminate_pe"
+
+
+rule krona__update_taxonomy:
+    output:
+        protected("{prefix_dir}/taxonomy.tab"),
+    params:
+        tax_dir=lambda wildcards, output: os.path.dirname(output[0]),
+    retries: 1
+    log:
+        "{prefix_dir}/logs/update_taxonomy.log",
+    conda:
+        "../envs/kraken2.yaml"
+    localrule: True
+    shell:
+        "ktUpdateTaxonomy.sh {params.tax_dir} 1> {log} 2>&1"
+
+
+rule kraken__krona_chart:
+    input:
+        kraken_output="results/kraken/{sample}.kreport2",
+        tax_tab=infer_krona_tab,
+    output:
+        "results/kraken/kronas/{sample}.html",
+    params:
+        extra="-m 3 -t 5",
+        tax_dir=lambda wildcards, input: os.path.dirname(input.tax_tab),
+    log:
+        "logs/kraken/krona_chart/{sample}.log",
+    conda:
+        "../envs/kraken2.yaml"
+    shell:
+        "ktImportTaxonomy {params.extra} -tax {params.tax_dir} -o {output} {input.kraken_output} 1> {log} 2>&1"
