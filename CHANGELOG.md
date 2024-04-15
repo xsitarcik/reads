@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/xsitarcik/reads/compare/v3.2.0...v3.2.1) (2024-04-15)
+
+
+### Bug Fixes
+
+* fixed kraken env ([de939d6](https://github.com/xsitarcik/reads/commit/de939d624995ec27677e8c6e97ae7eed897ef828))
+
 ## [3.2.0](https://github.com/xsitarcik/reads/compare/v3.1.10...v3.2.0) (2024-04-15)
 
 
