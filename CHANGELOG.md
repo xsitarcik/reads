@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/xsitarcik/reads/compare/v3.1.10...v3.2.0) (2024-04-15)
+
+
+### Features
+
+* added krona chart for decontamination ([4ce67c1](https://github.com/xsitarcik/reads/commit/4ce67c1c1be7bf3382c3543cc250bcaf45ec4973))
+
 ## [3.1.10](https://github.com/xsitarcik/reads/compare/v3.1.9...v3.1.10) (2024-04-13)
 
 
