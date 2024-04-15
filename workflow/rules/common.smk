@@ -108,6 +108,12 @@ def get_outputs():
             pair=["R1", "R2"],
         )
 
+    if config["reads"]["decontamination"] == "kraken":
+        if config["reads__decontamination__kraken"]["generate_krona"]:
+            outputs["krona_reports"] = expand(
+                "results/kraken/kronas/{sample}.html",
+                sample=sample_names,
+            )
     return outputs
 
 
@@ -263,6 +269,10 @@ def get_kraken_decontamination_params():
     if config["reads__decontamination__kraken"]["exclude_ancestors"]:
         extra.append("--include-parents")
     return " ".join(extra)
+
+
+def infer_krona_tab(wildcards):
+    return os.path.join(config["reads__decontamination__kraken"]["krona_dir"], "taxonomy.tab")
 
 
 ### Resource handling #################################################################################################
