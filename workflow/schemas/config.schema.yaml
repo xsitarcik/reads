@@ -11,26 +11,34 @@ definitions:
         default: "config/pep/config.yaml"
       reads:
         type: object
+        description: "Specify the order and methods for each read processing step. If no method is specified, the step will not be performed."
         "$ref": "#/definitions/ReadsProcessing"
+      reads__subsampling__seqtk:
+        type: object
+        "$ref": "#/definitions/ReadsSubsamplingSeqtk"
+        description: "Relevant only if reads->subsampling is set to seqtk."
+      reads__trimming__cutadapt:
+        type: object
+        "$ref": "#/definitions/ReadsTrimmingCutadapt"
+        description: "Relevant only if reads->trimming is set to cutadapt."
+      reads__decontamination__kraken:
+        type: object
+        "$ref": "#/definitions/ReadsDecontaminationKraken"
+        description: "Relevant only if reads->decontamination is set to kraken."
+      reads__deduplication__fastuniq:
+        type: object
+        description: "Relevant only if reads->deduplication is set to fastuniq. There are no parameters to be defined."
+        "$ref": "#/definitions/ReadsDeduplicationFastuniq"
       max_threads:
         type: integer
         description: "Number of maximum threads to use in jobs."
-        default: 1
+        default: 8
         Minimum: 1
       max_mem_mb:
         type: integer
         description: "Maximum memory in megabytes to allocate for any job."
         Minimum: 2048
-        default: 2048
-      reads__trimming__cutadapt:
-        type: object
-        "$ref": "#/definitions/ReadsTrimmingCutadapt"
-      reads__subsampling__seqtk:
-        type: object
-        "$ref": "#/definitions/ReadsSubsamplingSeqtk"
-      reads__decontamination__kraken:
-        type: object
-        "$ref": "#/definitions/ReadsDecontaminationKraken"
+        default: 4096
       resources:
         type: object
         "$ref": "#/definitions/Resources"
@@ -52,7 +60,7 @@ definitions:
         then:
           required:
             - reads__decontamination__kraken
-          message: "reads__decontamination__kraken is required if reads->decontamination is set to kraken"
+          message: "reads__decontamination__kraken is required if reads->decontamination is set to kraken."
       - if:
           properties:
             reads:
@@ -63,7 +71,7 @@ definitions:
         then:
           required:
             - reads__trimming__cutadapt
-          message: "reads__trimming__cutadapt is required if reads->trimming is set to cutadapt"
+          message: "reads__trimming__cutadapt is required if reads->trimming is set to cutadapt."
       - if:
           properties:
             reads:
@@ -74,7 +82,18 @@ definitions:
         then:
           required:
             - reads__subsampling__seqtk
-          message: "reads__subsampling__seqtk is required if reads->subsampling is set to seqtk"
+          message: "reads__subsampling__seqtk is required if reads->subsampling is set to seqtk."
+      - if:
+          properties:
+            reads:
+              properties:
+                deduplication:
+                  type: string
+                  const: "fastuniq"
+        then:
+          required:
+            - reads__deduplication__fastuniq
+          message: "reads__deduplication__fastuniq is required if reads->deduplication is set to fastuniq."
 
       # request resources based on specified tasks
       - if:
@@ -135,50 +154,61 @@ definitions:
       seed:
         type: integer
         default: 1
+        description: "Seed value to use for random number generator."
       n_reads:
         type: integer
+        description: "Number of reads to subsample."
+        minimum: 1
       reduce_memory:
         type: boolean
         default: True
+        description: "Set to 2-pass mode, slower but with less memory used."
     required:
       - seed
       - n_reads
       - reduce_memory
     title: ReadsSubsampling
+  ReadsDeduplicationFastuniq:
+    type: object
+    additionalProperties: false
+    description: "There are no parameters to be defined for Fastuniq deduplication."
+    default: {}
   ReadsDecontaminationKraken:
     type: object
     additionalProperties: false
     properties:
       kraken_dir:
         type: string
-        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename."
-        pattern: '.*k2_.*_\d{8}$'
+        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename. See https://benlangmead.github.io/aws-indexes/k2."
+        pattern: '.*k2_.*_\d{8}\/?$'
+        examples: ["/data/genome/metagenome/kraken/k2_pluspf_20240112"]
       exclude_taxa_ids:
         type: array
-        description: "list of taxonomy IDs to exclude."
+        description: "List of taxonomy IDs for excluding logic. Example: 9606 - Homo Sapiens of rank=species."
         minItems: 1
         items:
           type: integer
+        default: [9606]
       exclude_children:
         type: boolean
         default: false
-        description: "whether to exclude reads classified at more specific levels than specified taxonomy ID levels."
+        description: "Whether to exclude reads classified at more specific levels than specified taxonomy ID levels."
       exclude_ancestors:
         type: boolean
         default: false
-        description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels."
+        description: "Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels."
       save_memory:
         type: boolean
-        description: "if true, kraken limits RAM memory usage but sacrifices speed."
+        description: "If true, kraken limits RAM memory usage but sacrifices speed."
         default: true
       generate_krona:
         type: boolean
-        description: "If true, krona is generated from kraken report"
+        description: "If true, krona is generated from kraken report."
         default: false
       krona_dir:
         type: [string, "null"]
-        description: "Directory where krona dataset is located or will be downloaded."
-        default: "null"
+        description: "Directory where krona dataset is located, or where will be downloaded."
+        examples: ["/data/genome/taxonomy/krona/2023-12-03/"]
     required:
       - exclude_taxa_ids
       - kraken_dir
@@ -197,92 +227,143 @@ definitions:
         krona_dir:
           type: string
           pattern: '.*/\d{4}-\d{2}-\d{2}\/?$'
-      message: "reads__decontamination__kraken->krona_dir must be valid if generate_krona is True"
+      message: "reads__decontamination__kraken->krona_dir must be valid if generate_krona is True."
   ReadsTrimmingCutadapt:
     type: object
     additionalProperties: false
     properties:
+      cut_from_start_r1:
+        type: [integer, "null"]
+        description: "Removes a specified number of bases from the beginning of the R1 read."
+        minimum: 0
+        default: null
+      cut_from_start_r2:
+        type: [integer, "null"]
+        description: "Removes a specified number of bases from the beginning of the R2 read."
+        minimum: 0
+        default: null
+      cut_from_end_r1:
+        type: [integer, "null"]
+        description: "Removes a specified number of bases from the end of the R1 read."
+        minimum: 0
+        default: null
+      cut_from_end_r2:
+        type: [integer, "null"]
+        default: null
+        description: "Removes a specified number of bases from the end of the R2 read."
+        minimum: 0
+      quality_cutoff_from_3_end_r1:
+        type: integer
+        description: "Removes lower quality bases from the 3' end of the R1 read."
+        default: 20
+        minimum: 0
+      quality_cutoff_from_5_end_r1:
+        type: integer
+        description: "Removes lower quality bases from the 5' end of the R1 read."
+        default: 20
+        minimum: 0
+      quality_cutoff_from_3_end_r2:
+        type: integer
+        description: "Removes lower quality bases from the 3' end of the R2 read."
+        default: 20
+        minimum: 0
+      quality_cutoff_from_5_end_r2:
+        type: integer
+        description: "Removes lower quality bases from the 5' end of the R2 read."
+        default: 20
+        minimum: 0
+      nextseq_trimming_mode:
+        type: boolean
+        default: false
+        description: "Modify quality-trimming algorithm to expect two-color chemistry data (NextSeq)."
+      do_adapter_removal:
+        type: boolean
+        default: false
+        description: "Whether to do adapter removal or not."
       adapter_removal:
         type: object
         "$ref": "#/definitions/AdapterRemoval"
-        default: {}
+        description: "Relevant only if do_adapter_removal is set to true."
       shorten_to_length:
         type: [integer, "null"]
-        description: "Optional. Shorten each read to the specified length. Corresponds to the cutadapt length parameter."
+        description: "Shorten each read to the specified length. Corresponds to the cutadapt length parameter."
         minimum: 0
-      cut_from_start_r2:
-        type: [integer, "null"]
-        description: "Optional. Removes a specified number of bases from the beginning of the read."
-        minimum: 0
-      cut_from_end_r1:
-        type: [integer, "null"]
-        description: "Optional. Removes a specified number of bases from the end of the read."
-        minimum: 0
-      cut_from_start_r1:
-        type: [integer, "null"]
-        description: "Optional. Removes a specified number of bases from the beginning of the read."
-        minimum: 0
-      cut_from_end_r2:
-        type: [integer, "null"]
-        description: "Optional. Removes a specified number of bases from the end of the read."
-        minimum: 0
-      max_n_bases:
-        type: [integer, "null"]
-        description: "Optional. Removes reads with more N bases than the specified number."
-        minimum: 0
-      max_expected_errors:
-        type: [integer, "null"]
-        description: "Optional. Discard reads whose expected number of errors exceeds this value."
-        minimum: 0
-      max_length_r1:
-        type: [integer, "null"]
-        description: "Optional. Discards R1 reads longer than this."
-        minimum: 0
+        default: null
       trim_N_bases_on_ends:
-        type: [boolean, "null"]
-        description: "Optional. Set to true to trim N bases on ends."
-      max_length_r2:
-        type: [integer, "null"]
-        description: "Optional. Discards R2 reads longer than this."
-        minimum: 0
+        type: boolean
+        default: false
+        description: "Set to true to trim 'N' bases on ends."
       min_length_r1:
         type: [integer, "null"]
-        description: "Optional. Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+        description: "Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
         minimum: 0
+        default: null
       min_length_r2:
         type: [integer, "null"]
-        description: "Optional. Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
+        description: "Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
         minimum: 0
-      quality_cutoff_from_3_end_r1:
+        default: null
+      max_length_r1:
         type: [integer, "null"]
-        description: "Optional. Removes lower quality bases from the 3' end of the R1 read."
+        description: "Discards R1 reads longer than this value."
         minimum: 0
-      quality_cutoff_from_5_end_r1:
+        default: null
+      max_length_r2:
         type: [integer, "null"]
-        description: "Optional. Removes lower quality bases from the 5' end of the R1 read."
+        description: "Discards R2 reads longer than this value."
         minimum: 0
-      quality_cutoff_from_3_end_r2:
+        default: null
+      max_n_bases:
         type: [integer, "null"]
-        description: "Optional. Removes lower quality bases from the 3' end of the R2 read."
+        description: "Removes reads with more 'N' bases than the specified number."
         minimum: 0
-      quality_cutoff_from_5_end_r2:
+        default: null
+      max_expected_errors:
         type: [integer, "null"]
-        description: "Optional. Removes lower quality bases from the 5' end of the R2 read."
+        description: "Discard reads whose expected number of errors exceeds this value."
         minimum: 0
+        default: null
     required:
-      - adapter_removal
-    title: ReadsTrimming
+      - quality_cutoff_from_3_end_r1
+      - quality_cutoff_from_5_end_r1
+      - quality_cutoff_from_3_end_r2
+      - quality_cutoff_from_5_end_r2
+      - nextseq_trimming_mode
+      - do_adapter_removal
+      - cut_from_start_r1
+      - cut_from_start_r2
+      - cut_from_end_r1
+      - cut_from_end_r2
+      - shorten_to_length
+      - trim_N_bases_on_ends
+      - min_length_r1
+      - min_length_r2
+      - max_length_r1
+      - max_length_r2
+      - max_n_bases
+      - max_expected_errors
+    title: ReadsTrimmingCutadapt
+    if:
+      properties:
+        do_adapter_removal:
+          const: true
+    then:
+      required:
+        - adapter_removal
   AdapterRemoval:
     type: object
     additionalProperties: false
     properties:
-      do:
-        type: boolean
-        default: false
-        description: "Whether to do adapter removal or not."
-      adapters_fasta:
+      action:
         type: string
-        description: "Adapters fasta used for adapter trimming."
+        enum:
+          - "retain"
+          - "trim"
+          - "mask"
+          - "none"
+          - "lowercase"
+        default: "trim"
+        description: "Defines an action to perform with the found adapter."
       overlap:
         type: integer
         default: 3
@@ -296,43 +377,27 @@ definitions:
         type: integer
         default: 1
         description: "How many times to repeat adapter removal."
-      action:
-        type: string
-        enum:
-          - "retain"
-          - "trim"
-          - "mask"
-          - "none"
-          - "lowercase"
-        default: "trim"
-        description: "Defines an action to perform with the found adapter."
       keep_trimmed_only:
         type: boolean
         default: false
         description: "Discard reads with no adapters found."
-      read_location:
-        type: string
-        enum:
-          - "anywhere"
-          - "regular"
-          - "front"
-        default: "anywhere"
-        description: "Path to the adapter file. Search for adapters anywhere in the read."
+      adapters_anywhere_file:
+        type: [string, "null"]
+        description: "Fasta file path with adapters to be matched 'anywhere'."
+      adapters_3_end_file:
+        type: [string, "null"]
+        description: "Fasta file path with adapters to be matched at 3'end."
+      adapters_5_end_file:
+        type: [string, "null"]
+        description: "Fasta file path with adapters to be matched at 5'end."
     required:
-      - do
-    if:
-      properties:
-        do:
-          const: true
-    then:
-      required:
-        - adapters_fasta
-        - overlap
-        - error_rate
-        - times
-        - action
-        - keep_trimmed_only
-        - read_location
+      - overlap
+      - error_rate
+      - times
+      - action
+      - adapters_anywhere_file
+      - adapters_3_end_file
+      - adapters_5_end_file
     title: AdapterRemoval
   ReadsProcessing:
     type: object
@@ -340,39 +405,47 @@ definitions:
     properties:
       subsampling:
         type: [string, "null"]
-        description: "Specification of subsampling method."
+        description: "Subsampling method, if not set, subsampling will not be performed."
         enum:
           - "seqtk"
           - null
+        default: null
       trimming:
         type: [string, "null"]
-        description: "Specification of trimming method."
+        description: "Trimming method, if not set, trimming will not be performed."
         enum:
           - "cutadapt"
           - null
+        default: null
+        examples: ["cutadapt"]
       decontamination:
         type: [string, "null"]
-        description: "Specification of decontamination method."
+        description: "Decontamination method, if not set, decontamination will not be performed."
         enum:
           - "kraken"
           - null
+        default: null
+        examples: ["kraken"]
       deduplication:
         type: [string, "null"]
-        description: "Specification of deduplication method."
+        description: "Deduplication method, if not set, deduplication will not be performed."
         enum:
           - "fastuniq"
           - null
+        default: null
       _generate_fastqc_for:
         type: array
-        default: []
+        description: "Specify which steps to generate fastqc for."
         items:
           type: string
           enum:
-            - "decontamination"
-            - "trimming"
-            - "subsampling"
-            - "deduplication"
             - "original"
+            - "subsampling"
+            - "trimming"
+            - "decontamination"
+            - "deduplication"
+        default: null
+        examples: [["original", "decontamination"]]
     allOf:
       - if:
           properties:
@@ -383,7 +456,7 @@ definitions:
           properties:
             deduplication:
               type: string
-              description: "Reads->Deduplication is required if fastqc is requested for deduplication"
+              description: "Reads->Deduplication is required if fastqc is requested for deduplication."
       - if:
           properties:
             _generate_fastqc_for:
@@ -393,7 +466,7 @@ definitions:
           properties:
             trimming:
               type: string
-              description: "Reads-trimming is required if fastqc is requested for trimming"
+              description: "Reads-trimming is required if fastqc is requested for trimming."
       - if:
           properties:
             _generate_fastqc_for:
@@ -403,7 +476,7 @@ definitions:
           properties:
             subsampling:
               type: string
-              description: "Reads->subsampling is required if fastqc is requested for subsampling"
+              description: "Reads->subsampling is required if fastqc is requested for subsampling."
       - if:
           properties:
             _generate_fastqc_for:
@@ -413,7 +486,7 @@ definitions:
           properties:
             decontamination:
               type: string
-              description: "Reads->decontamination is required if fastqc is requested for decontamination"
+              description: "Reads->decontamination is required if fastqc is requested for decontamination."
     title: ReadsProcessing
     required:
       - _generate_fastqc_for
@@ -424,7 +497,7 @@ definitions:
       reads__trimming_mem_mb:
         type: integer
         description: "Memory in MB to reserve for trimming."
-        default: 2048
+        default: 4096
       reads__fastqc_mem_mb:
         type: integer
         description: "Memory in MB to reserve for fastqc."
@@ -437,15 +510,15 @@ definitions:
       reads__trimming:
         type: integer
         description: "Number of threads to use for trimming."
-        default: 1
+        default: 4
       reads__deduplication:
         type: integer
         description: "Number of threads to use for deduplication."
-        default: 1
+        default: 4
       reads__decontamination:
         type: integer
         description: "Number of threads to use for decontamination."
-        default: 1
+        default: 8
       reads__fastqc:
         type: integer
         description: "Number of threads to use for fastqc."

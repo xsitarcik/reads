@@ -9,8 +9,8 @@ reads: # Specify the order and methods for each read processing step. If no meth
 
 reads__subsampling__seqtk:
   seed: 1
-  n_reads: 500
-  reduce_memory: true
+  n_reads: 300
+  reduce_memory: false
 
 ### RESOURCES #############################
 

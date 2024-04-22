@@ -1,6 +1,6 @@
 reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
   decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
-  _generate_fastqc_for: ["decontamination"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+  _generate_fastqc_for: [] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
   deduplication: null
   trimming: null
   subsampling: null
