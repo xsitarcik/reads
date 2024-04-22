@@ -194,20 +194,20 @@ def parse_adapter_removal_params(adapter_config):
 def get_cutadapt_extra(cutadapt_config) -> list[str]:
     args_lst = []
 
-    if value := cutadapt_config["shorten_to_length"] is not None:
+    if (value := cutadapt_config["shorten_to_length"]) is not None:
         args_lst.append(f"--length {value}")
-    if value := cutadapt_config["cut_from_start_r1"] is not None:
+    if (value := cutadapt_config["cut_from_start_r1"]) is not None:
         args_lst.append(f"--cut {value}")
-    if value := cutadapt_config["cut_from_start_r2"] is not None:
+    if (value := cutadapt_config["cut_from_start_r2"]) is not None:
         args_lst.append(f"-U {value}")
-    if value := cutadapt_config["cut_from_end_r1"] is not None:
+    if (value := cutadapt_config["cut_from_end_r1"]) is not None:
         args_lst.append(f"--cut -{value}")
-    if value := cutadapt_config["cut_from_end_r2"] is not None:
+    if (value := cutadapt_config["cut_from_end_r2"]) is not None:
         args_lst.append(f"-U -{value}")
 
-    if value := cutadapt_config["max_n_bases"] is not None:
+    if (value := cutadapt_config["max_n_bases"]) is not None:
         args_lst.append(f"--max-n {value}")
-    if value := cutadapt_config["max_expected_errors"] is not None:
+    if (value := cutadapt_config["max_expected_errors"]) is not None:
         args_lst.append(f"--max-expected-errors {value}")
     if value := cutadapt_config["trim_N_bases_on_ends"]:
         args_lst.append(f"--trim-n")
