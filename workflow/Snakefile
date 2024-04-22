@@ -24,3 +24,7 @@ rule all:
     input:
         **get_outputs(),
     localrule: True
+
+
+with open(".parameters_parsed.txt", "w") as f:
+    f.write(get_all_relevant_extra_params())

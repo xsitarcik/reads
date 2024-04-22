@@ -13,18 +13,6 @@ pepfile: config.get("pepfile", "config/pep/config.yaml")
 validate(pep.sample_table, "../schemas/samples.schema.yaml")
 
 
-def validate_dynamic_config():
-    if (
-        config["reads"].get("trimming", "") == "cutadapt"
-        and config["reads__trimming__cutadapt"]["adapter_removal"]["do"]
-    ):
-        if not os.path.exists(config["reads__trimming__cutadapt"]["adapter_removal"]["adapters_fasta"]):
-            adapter_file = config["reads__trimming__cutadapt"]["adapter_removal"]["adapters_fasta"]
-            raise ValueError(f"Adapter removal is enabled, but the {adapter_file=} does not exist")
-
-
-validate_dynamic_config()
-
 ### Layer for adapting other workflows  ###############################################################################
 
 
@@ -170,74 +158,87 @@ def infer_fastqs_for_subsampling(wildcards):
 
 
 def parse_adapter_removal_params(adapter_config):
-    args_lst = []
-    adapters_file = adapter_config["adapters_fasta"]
-    read_location = adapter_config["read_location"]
-
-    if read_location == "front":
-        paired_arg = "-G"
-    elif read_location == "anywhere":
-        paired_arg = "-B"
-    elif read_location == "adapter":
-        paired_arg = "-A"
-
-    args_lst.append(f"--{read_location} file:{adapters_file} {paired_arg} file:{adapters_file}")
-
+    args_lst = [
+        f"--action {adapter_config['action']}",
+        f"--overlap {adapter_config['overlap']}",
+        f"--times {adapter_config['times']}",
+        f"--error-rate {adapter_config['error_rate']}",
+    ]
     if adapter_config["keep_trimmed_only"]:
         args_lst.append("--discard-untrimmed")
 
-    args_lst.append(f"--action {adapter_config['action']}")
-    args_lst.append(f"--overlap {adapter_config['overlap']}")
-    args_lst.append(f"--times {adapter_config['times']}")
-    args_lst.append(f"--error-rate {adapter_config['error_rate']}")
+    if path := adapter_config["adapters_anywhere_file"]:
+        if not os.path.exists(path):
+            raise ValueError(
+                f"Adapter removal is enabled, but the adapter file specified in the adapters_anywhere_file element = {path} does not exist."
+            )
+        args_lst.append(f"--anywhere file:{path} -B file:{path}")
+
+    if end3_file := adapter_config["adapters_3_end_file"]:
+        if not os.path.exists(end3_file):
+            raise ValueError(
+                f"Adapter removal is enabled, but the adapter file specified in the adapters_3_end_file element = {end3_file} does not exist."
+            )
+        args_lst.append(f"--adapter file:{path} -A file:{path}")
+
+    if end5_file := adapter_config["adapters_5_end_file"]:
+        if not os.path.exists(end5_file):
+            raise ValueError(
+                f"Adapter removal is enabled, but the adapter file specified in the adapters_5_end_file element = {end5_file} does not exist."
+            )
+        args_lst.append(f"--front file:{path} -G file:{path}")
+
     return args_lst
 
 
 def get_cutadapt_extra(cutadapt_config) -> list[str]:
     args_lst = []
 
-    if value := cutadapt_config.get("shorten_to_length", None):
+    if (value := cutadapt_config["shorten_to_length"]) is not None:
         args_lst.append(f"--length {value}")
-    if value := cutadapt_config.get("cut_from_start_r1", None):
+    if (value := cutadapt_config["cut_from_start_r1"]) is not None:
         args_lst.append(f"--cut {value}")
-    if value := cutadapt_config.get("cut_from_start_r2", None):
+    if (value := cutadapt_config["cut_from_start_r2"]) is not None:
         args_lst.append(f"-U {value}")
-    if value := cutadapt_config.get("cut_from_end_r1", None):
+    if (value := cutadapt_config["cut_from_end_r1"]) is not None:
         args_lst.append(f"--cut -{value}")
-    if value := cutadapt_config.get("cut_from_end_r2", None):
+    if (value := cutadapt_config["cut_from_end_r2"]) is not None:
         args_lst.append(f"-U -{value}")
 
-    if value := cutadapt_config.get("max_n_bases", None):
+    if (value := cutadapt_config["max_n_bases"]) is not None:
         args_lst.append(f"--max-n {value}")
-    if value := cutadapt_config.get("max_expected_errors", None):
+    if (value := cutadapt_config["max_expected_errors"]) is not None:
         args_lst.append(f"--max-expected-errors {value}")
-    if value := cutadapt_config.get("trim_N_bases_on_ends", None):
+    if value := cutadapt_config["trim_N_bases_on_ends"]:
         args_lst.append(f"--trim-n")
+    if cutadapt_config["nextseq_trimming_mode"]:
+        value = config["reads__trimming"]["quality_cutoff_from_3_end_r1"]
+        args_lst.append(f"--nextseq-trim={value}")
 
-    if cutadapt_config["adapter_removal"]["do"]:
+    if cutadapt_config["do_adapter_removal"]:
         args_lst += parse_adapter_removal_params(cutadapt_config["adapter_removal"])
 
     return args_lst
 
 
 def parse_paired_cutadapt_param(pe_config, param1, param2, arg_name) -> str:
-    if pe_config.get(param1, None):
-        if pe_config.get(param2, None):
+    if pe_config.get(param1, None) is not None:
+        if pe_config.get(param2, None) is not None:
             return f"{arg_name} {pe_config[param1]}:{pe_config[param2]}"
         else:
             return f"{arg_name} {pe_config[param1]}:"
-    elif pe_config.get(param2, None):
+    elif pe_config.get(param2, None) is not None:
         return f"{arg_name} :{pe_config[param2]}"
     return ""
 
 
 def parse_cutadapt_comma_param(cutadapt_config, param1, param2, arg_name) -> str:
-    if cutadapt_config.get(param1):
-        if cutadapt_config.get(param2):
+    if cutadapt_config.get(param1) is not None:
+        if cutadapt_config.get(param2) is not None:
             return f"{arg_name} {cutadapt_config[param2]},{cutadapt_config[param1]}"
         else:
             return f"{arg_name} {cutadapt_config[param1]}"
-    elif cutadapt_config.get(param2):
+    elif cutadapt_config.get(param2) is not None:
         return f"{arg_name} {cutadapt_config[param2]},0"
     return ""
 
@@ -273,6 +274,13 @@ def get_kraken_decontamination_params():
 
 def infer_krona_tab(wildcards):
     return os.path.join(config["reads__decontamination__kraken"]["krona_dir"], "taxonomy.tab")
+
+
+def get_all_relevant_extra_params():
+    extra = ""
+    if config["reads"]["trimming"] == "cutadapt":
+        extra += f"Cutadapt: {get_cutadapt_extra_pe()}\n"
+    return extra
 
 
 ### Resource handling #################################################################################################
