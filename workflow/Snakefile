@@ -33,5 +33,6 @@ rule all:
     localrule: True
 
 
-logger.info("Reads module - parsed parameters:")
-logger.info(get_all_relevant_extra_params())
+if extra := get_all_relevant_extra_params():
+    logger.info("Reads module - extra parameters parsed from config:")
+    logger.info(get_all_relevant_extra_params())
