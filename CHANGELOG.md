@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/xsitarcik/reads/compare/v3.3.0...v3.4.0) (2024-04-25)
+
+
+### Features
+
+* added multiqc ([537ee12](https://github.com/xsitarcik/reads/commit/537ee12ceb0e64ea5da5210a18d1a3299d9e8352))
+
 ## [3.3.0](https://github.com/xsitarcik/reads/compare/v3.2.1...v3.3.0) (2024-04-22)
 
 
