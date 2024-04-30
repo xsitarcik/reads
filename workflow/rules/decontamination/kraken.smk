@@ -52,7 +52,7 @@ rule kraken__decontaminate:
     log:
         "logs/kraken/decontaminate/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/kraken/decontaminate_pe"
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/kraken/decontaminate_pe"
 
 
 rule krona__update_taxonomy:
@@ -75,7 +75,14 @@ rule kraken__krona_chart:
         kraken_output="results/kraken/{sample}.kreport2",
         tax_tab=infer_krona_tab,
     output:
-        "results/kraken/kronas/{sample}.html",
+        report(
+            "results/kraken/kronas/{sample}.html",
+            category="Reads Quality Control",
+            labels={
+                "Sample": "{sample}",
+                "Type": "Krona chart",
+            },
+        ),
     params:
         extra="-m 3 -t 5",
         tax_dir=lambda wildcards, input: os.path.dirname(input.tax_tab),
