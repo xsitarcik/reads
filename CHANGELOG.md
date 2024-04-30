@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.4.2](https://github.com/xsitarcik/reads/compare/v3.4.1...v3.4.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* multiqc rule with config input ([edc688e](https://github.com/xsitarcik/reads/commit/edc688e0651726e847846c8d57c6a4fc25ea9822))
+* parameter parsing written only onstart ([23a7ead](https://github.com/xsitarcik/reads/commit/23a7ead128d1029156c1719f83a2fa9960e340af))
+
+
+### Performance Improvements
+
+* bumped wrappers ([eeba814](https://github.com/xsitarcik/reads/commit/eeba8142bc62536733e5b4bcee281d5d6d7b91d5))
+
 ## [3.4.1](https://github.com/xsitarcik/reads/compare/v3.4.0...v3.4.1) (2024-04-29)
 
 
