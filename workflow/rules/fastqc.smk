@@ -4,9 +4,10 @@ rule fastqc__quality_report:
     output:
         html=report(
             "results/reads/{step}/fastqc/{sample}_{pair}.html",
-            category="{sample}",
+            category="Reads Quality Control",
             labels={
-                "Type": "Fastqc {pair} - {step}",
+                "Sample": "{sample}",
+                "Type": "FastQC {pair} - {step}",
             },
         ),
         zip="results/reads/{step}/fastqc/{sample}_{pair}.zip",
@@ -18,4 +19,4 @@ rule fastqc__quality_report:
     log:
         "logs/fastqc/{step}/{sample}_{pair}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/fastqc/quality"
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.4/wrappers/fastqc/quality"
