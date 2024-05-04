@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.3](https://github.com/xsitarcik/reads/compare/v3.4.2...v3.4.3) (2024-05-04)
+
+
+### Performance Improvements
+
+* autobump conda envs and/or wrappers ([29f4474](https://github.com/xsitarcik/reads/commit/29f447492472b287f2e71bca9cc5667a20974e3c))
+
 ## [3.4.2](https://github.com/xsitarcik/reads/compare/v3.4.1...v3.4.2) (2024-04-30)
 
 
