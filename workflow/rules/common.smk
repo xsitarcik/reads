@@ -81,16 +81,14 @@ def get_multiqc_inputs():
     outs = {}
     if config["reads"]["trimming"] == "cutadapt":
         outs["cutadapt"] = expand("results/reads/trimming/{sample}.qc.txt", sample=get_sample_names())
-    if fastqc_steps := config["reads"]["_generate_fastqc_for"]:
 
-        for step in get_read_processing_steps()[::-1]:
-            if step in fastqc_steps:
-                outs["fastqc"] = expand(
-                    f"results/reads/{step}/fastqc/{{sample}}_{{pair}}/fastqc_data.txt",
-                    sample=get_sample_names(),
-                    pair=["R1", "R2"],
-                )
-                break
+    if fastqc_steps := config["reads"]["_generate_fastqc_for"]:
+        outs["fastqc"] = expand(
+            f"results/reads/{step}/fastqc/{{sample}}_{{pair}}/fastqc_data.txt",
+            sample=get_sample_names(),
+            pair=["R1", "R2"],
+            step=fastqc_steps,
+        )
     if config["reads"]["decontamination"] == "kraken":
         outs["kraken"] = expand("results/kraken/{sample}.kreport2", sample=get_sample_names())
     return outs
