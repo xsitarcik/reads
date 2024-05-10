@@ -8,9 +8,6 @@ run_modules:
   - cutadapt
   - kraken
 
-use_filename_as_sample_name:
-  - fastqc
-
 module_order:
   - fastqc:
       name: "Reads QC - original"
@@ -68,18 +65,25 @@ extra_fn_clean_exts:
   - type: remove
     pattern: "kraken/"
     module: kraken
+  - type: remove
+    pattern: "fastqc/"
+  - type: regex_keep
+    pattern: "(deduplication|original|trimming|subsampling|decontamination)\/([^\/]*)_R[1,2]"
 
 table_columns_visible:
-  Reads QC:
+  "Reads QC - original":
     percent_duplicates: True
     percent_gc: False
     avg_sequence_length: False
     median_sequence_length: False
     percent_fails: True
     total_sequences: True
+  "Reads QC - trimming": False
+  "Reads QC - subsampling": False
+  "Reads QC - deduplication": False
+  "Reads QC - decontamination": False
   Reads Trimming:
     percent_trimmed: True
-  cutadapt: False
 
 read_count_multiplier: 0.001
 read_count_prefix: "K"
