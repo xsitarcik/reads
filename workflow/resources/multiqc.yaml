@@ -1,5 +1,85 @@
+prepend_dirs_sep: "/"
+no_version_check: true
+
+run_modules:
+  - fastqc
+  - cutadapt
+  - kraken
+
+use_filename_as_sample_name:
+  - fastqc
+
+module_order:
+  - fastqc:
+      name: "Reads QC - original"
+      target: "FastQC"
+      anchor: "fastqc_original"
+      info: "FastQC reports on raw original reads."
+      path_filters:
+        - "results/reads/original/fastqc/*.fastqc_data.txt"
+  - fastqc:
+      name: "Reads QC - trimming"
+      target: "FastQC"
+      anchor: "fastqc_trimming"
+      info: "FastQC reports on reads after trimming."
+      path_filters:
+        - "results/reads/trimming/fastqc/*.fastqc_data.txt"
+  - fastqc:
+      name: "Reads QC - subsampling"
+      target: "FastQC"
+      anchor: "fastqc_subsampling"
+      info: "FastQC reports on reads after subsampling."
+      path_filters:
+        - "results/reads/subsampling/fastqc/*.fastqc_data.txt"
+  - fastqc:
+      name: "Reads QC - deduplication"
+      target: "FastQC"
+      anchor: "fastqc_deduplication"
+      info: "FastQC reports on deduplication reads."
+      path_filters:
+        - "results/reads/deduplication/fastqc/*.fastqc_data.txt"
+  - fastqc:
+      name: "Reads QC - decontamination"
+      target: "FastQC"
+      anchor: "fastqc_decontamination"
+      info: "FastQC reports on decontamination reads."
+      path_filters:
+        - "results/reads/decontamination/fastqc/*.fastqc_data.txt"
+  - cutadapt:
+      name: "Reads Trimming"
+      target: "cutadapt"
+  - kraken:
+      name: "Species Diversity"
+      target: "Kraken2"
+
 fn_clean_exts:
   - ".kreport2"
-  - ".bam"
   - "_R1.fastq.gz"
   - "_R2.fastq.gz"
+
+extra_fn_clean_exts:
+  - type: remove
+    pattern: "results/"
+  - type: remove
+    pattern: "reads/trimming/"
+    module: cutadapt
+
+table_columns_visible:
+  Reads QC:
+    percent_duplicates: True
+    percent_gc: False
+    avg_sequence_length: False
+    median_sequence_length: False
+    percent_fails: True
+    total_sequences: True
+  Reads Trimming:
+    percent_trimmed: True
+  cutadapt: False
+
+read_count_multiplier: 0.001
+read_count_prefix: "K"
+read_count_desc: "thousands"
+
+base_count_multiplier: 0.001
+base_count_prefix: "K"
+base_count_desc: "thousands"
