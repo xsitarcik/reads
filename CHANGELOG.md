@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.4.4](https://github.com/xsitarcik/reads/compare/v3.4.3...v3.4.4) (2024-05-10)
+
+
+### Bug Fixes
+
+* added multiqc into report ([7d5410b](https://github.com/xsitarcik/reads/commit/7d5410bb86a0471129f92fd8226155b0ba3446f6))
+* min_length values in trimming set to 45 defaultly ([95e0da0](https://github.com/xsitarcik/reads/commit/95e0da036b78441538422534638a7a472322b7d2))
+* multiqc config ([bba58f3](https://github.com/xsitarcik/reads/commit/bba58f36d5ea7302ffb6bcaba565d1e70e92aec5))
+* multiqc for all fastqc steps defined in config ([b75b1b8](https://github.com/xsitarcik/reads/commit/b75b1b8b61a63604bb21b09f79b0004a75fafce1))
+* multiqc kraken hidden ([a5ca03a](https://github.com/xsitarcik/reads/commit/a5ca03af88403d2862dd6237f7c1e63e029c1707))
+* schema fixed so irrelevant elements are not validated ([d3fece8](https://github.com/xsitarcik/reads/commit/d3fece8768c9e0d8e8acf77e4f4c2aadd5cdb3b3))
+
 ## [3.4.3](https://github.com/xsitarcik/reads/compare/v3.4.2...v3.4.3) (2024-05-04)
 
 
