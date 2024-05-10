@@ -10,42 +10,42 @@ run_modules:
 
 module_order:
   - fastqc:
-      name: "Reads QC - original"
+      name: "FastQC - original"
       target: "FastQC"
       anchor: "fastqc_original"
       info: "FastQC reports on raw original reads."
       path_filters:
         - "results/reads/original/fastqc/*fastqc_data.txt"
   - fastqc:
-      name: "Reads QC - trimming"
+      name: "FastQC - trimming"
       target: "FastQC"
       anchor: "fastqc_trimming"
       info: "FastQC reports on reads after trimming."
       path_filters:
         - "results/reads/trimming/fastqc/*fastqc_data.txt"
   - fastqc:
-      name: "Reads QC - subsampling"
+      name: "FastQC - subsampling"
       target: "FastQC"
       anchor: "fastqc_subsampling"
       info: "FastQC reports on reads after subsampling."
       path_filters:
         - "results/reads/subsampling/fastqc/*fastqc_data.txt"
   - fastqc:
-      name: "Reads QC - deduplication"
+      name: "FastQC - deduplication"
       target: "FastQC"
       anchor: "fastqc_deduplication"
       info: "FastQC reports on reads after deduplication."
       path_filters:
         - "results/reads/deduplication/fastqc/*fastqc_data.txt"
   - fastqc:
-      name: "Reads QC - decontamination"
+      name: "FastQC - decontamination"
       target: "FastQC"
       anchor: "fastqc_decontamination"
       info: "FastQC reports on reads after decontamination."
       path_filters:
         - "results/reads/decontamination/fastqc/*fastqc_data.txt"
   - cutadapt:
-      name: "Reads Trimming"
+      name: "Cutadapt - Trimming"
       target: "cutadapt"
   - kraken:
       name: "Species Diversity"
@@ -71,19 +71,20 @@ extra_fn_clean_exts:
     pattern: "(deduplication|original|trimming|subsampling|decontamination)\/([^\/]*)_R[1,2]"
 
 table_columns_visible:
-  "Reads QC - original":
+  "FastQC - original":
     percent_duplicates: True
     percent_gc: False
     avg_sequence_length: False
     median_sequence_length: False
     percent_fails: True
     total_sequences: True
-  "Reads QC - trimming": False
-  "Reads QC - subsampling": False
-  "Reads QC - deduplication": False
-  "Reads QC - decontamination": False
-  Reads Trimming:
+  "FastQC - trimming": False
+  "FastQC - subsampling": False
+  "FastQC - deduplication": False
+  "FastQC - decontamination": False
+  "Cutadapt - Trimming":
     percent_trimmed: True
+  "Species Diversity": False
 
 read_count_multiplier: 0.001
 read_count_prefix: "K"
