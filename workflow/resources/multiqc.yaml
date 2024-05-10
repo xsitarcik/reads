@@ -1,4 +1,6 @@
 prepend_dirs_sep: "/"
+prepend_dirs_depth: 0
+prepend_dirs: true
 no_version_check: true
 
 run_modules:
@@ -16,35 +18,35 @@ module_order:
       anchor: "fastqc_original"
       info: "FastQC reports on raw original reads."
       path_filters:
-        - "results/reads/original/fastqc/*.fastqc_data.txt"
+        - "results/reads/original/fastqc/*fastqc_data.txt"
   - fastqc:
       name: "Reads QC - trimming"
       target: "FastQC"
       anchor: "fastqc_trimming"
       info: "FastQC reports on reads after trimming."
       path_filters:
-        - "results/reads/trimming/fastqc/*.fastqc_data.txt"
+        - "results/reads/trimming/fastqc/*fastqc_data.txt"
   - fastqc:
       name: "Reads QC - subsampling"
       target: "FastQC"
       anchor: "fastqc_subsampling"
       info: "FastQC reports on reads after subsampling."
       path_filters:
-        - "results/reads/subsampling/fastqc/*.fastqc_data.txt"
+        - "results/reads/subsampling/fastqc/*fastqc_data.txt"
   - fastqc:
       name: "Reads QC - deduplication"
       target: "FastQC"
       anchor: "fastqc_deduplication"
-      info: "FastQC reports on deduplication reads."
+      info: "FastQC reports on reads after deduplication."
       path_filters:
-        - "results/reads/deduplication/fastqc/*.fastqc_data.txt"
+        - "results/reads/deduplication/fastqc/*fastqc_data.txt"
   - fastqc:
       name: "Reads QC - decontamination"
       target: "FastQC"
       anchor: "fastqc_decontamination"
-      info: "FastQC reports on decontamination reads."
+      info: "FastQC reports on reads after decontamination."
       path_filters:
-        - "results/reads/decontamination/fastqc/*.fastqc_data.txt"
+        - "results/reads/decontamination/fastqc/*fastqc_data.txt"
   - cutadapt:
       name: "Reads Trimming"
       target: "cutadapt"
@@ -63,6 +65,9 @@ extra_fn_clean_exts:
   - type: remove
     pattern: "reads/trimming/"
     module: cutadapt
+  - type: remove
+    pattern: "kraken/"
+    module: kraken
 
 table_columns_visible:
   Reads QC:

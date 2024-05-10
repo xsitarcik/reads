@@ -84,7 +84,7 @@ def get_multiqc_inputs():
 
     if fastqc_steps := config["reads"]["_generate_fastqc_for"]:
         outs["fastqc"] = expand(
-            f"results/reads/{step}/fastqc/{{sample}}_{{pair}}/fastqc_data.txt",
+            f"results/reads/{{step}}/fastqc/{{sample}}_{{pair}}/fastqc_data.txt",
             sample=get_sample_names(),
             pair=["R1", "R2"],
             step=fastqc_steps,
