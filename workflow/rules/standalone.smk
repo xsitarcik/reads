@@ -3,7 +3,13 @@ rule multiqc__report:
         **get_multiqc_inputs(),
         config=f"{workflow.basedir}/resources/multiqc.yaml",
     output:
-        "results/_aggregation/multiqc.html",
+        report(
+            "results/_aggregation/multiqc.html",
+            category="Summary",
+            labels={
+                "Type": "MultiQC",
+            },
+        ),
     params:
         use_input_files_only=True,
     log:

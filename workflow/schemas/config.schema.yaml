@@ -13,22 +13,6 @@ definitions:
         type: object
         description: "Specify the order and methods for each read processing step. If no method is specified, the step will not be performed."
         "$ref": "#/definitions/ReadsProcessing"
-      reads__subsampling__seqtk:
-        type: object
-        "$ref": "#/definitions/ReadsSubsamplingSeqtk"
-        description: "Relevant only if reads->subsampling is set to seqtk."
-      reads__trimming__cutadapt:
-        type: object
-        "$ref": "#/definitions/ReadsTrimmingCutadapt"
-        description: "Relevant only if reads->trimming is set to cutadapt."
-      reads__decontamination__kraken:
-        type: object
-        "$ref": "#/definitions/ReadsDecontaminationKraken"
-        description: "Relevant only if reads->decontamination is set to kraken."
-      reads__deduplication__fastuniq:
-        type: object
-        description: "Relevant only if reads->deduplication is set to fastuniq. There are no parameters to be defined."
-        "$ref": "#/definitions/ReadsDeduplicationFastuniq"
       max_threads:
         type: integer
         description: "Number of maximum threads to use in jobs."
@@ -58,6 +42,11 @@ definitions:
                   type: string
                   const: "kraken"
         then:
+          properties:
+            reads__decontamination__kraken:
+              type: object
+              "$ref": "#/definitions/ReadsDecontaminationKraken"
+              description: "Relevant only if reads->decontamination is set to kraken."
           required:
             - reads__decontamination__kraken
           message: "reads__decontamination__kraken is required if reads->decontamination is set to kraken."
@@ -69,6 +58,11 @@ definitions:
                   type: string
                   const: "cutadapt"
         then:
+          properties:
+            reads__trimming__cutadapt:
+              type: object
+              "$ref": "#/definitions/ReadsTrimmingCutadapt"
+              description: "Relevant only if reads->trimming is set to cutadapt."
           required:
             - reads__trimming__cutadapt
           message: "reads__trimming__cutadapt is required if reads->trimming is set to cutadapt."
@@ -80,6 +74,11 @@ definitions:
                   type: string
                   const: "seqtk"
         then:
+          properties:
+            reads__subsampling__seqtk:
+              type: object
+              "$ref": "#/definitions/ReadsSubsamplingSeqtk"
+              description: "Relevant only if reads->subsampling is set to seqtk."
           required:
             - reads__subsampling__seqtk
           message: "reads__subsampling__seqtk is required if reads->subsampling is set to seqtk."
@@ -91,6 +90,11 @@ definitions:
                   type: string
                   const: "fastuniq"
         then:
+          properties:
+            reads__deduplication__fastuniq:
+              type: object
+              "$ref": "#/definitions/ReadsDeduplicationFastuniq"
+              description: "Relevant only if reads->deduplication is set to fastuniq. There are no parameters to be defined."
           required:
             - reads__deduplication__fastuniq
           message: "reads__deduplication__fastuniq is required if reads->deduplication is set to fastuniq."
@@ -298,11 +302,13 @@ definitions:
         description: "Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
         minimum: 0
         default: null
+        examples: [45]
       min_length_r2:
         type: [integer, "null"]
         description: "Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads."
         minimum: 0
         default: null
+        examples: [45]
       max_length_r1:
         type: [integer, "null"]
         description: "Discards R1 reads longer than this value."

@@ -34,8 +34,8 @@ reads__trimming__cutadapt: # Relevant only if reads->trimming is set to cutadapt
     adapters_5_end_file: TO_BE_DEFINED # null/str: Fasta file path with adapters to be matched at 5'end.
   shorten_to_length: null # null/int: Shorten each read to the specified length. Corresponds to the cutadapt length parameter.
   trim_N_bases_on_ends: false # bool(false): Set to true to trim 'N' bases on ends.
-  min_length_r1: null # null/int: Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
-  min_length_r2: null # null/int: Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  min_length_r1: 45 # null/int: Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  min_length_r2: 45 # null/int: Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
   max_length_r1: null # null/int: Discards R1 reads longer than this value.
   max_length_r2: null # null/int: Discards R2 reads longer than this value.
   max_n_bases: null # null/int: Removes reads with more 'N' bases than the specified number.
