@@ -45,7 +45,7 @@ module_order:
       path_filters:
         - "results/reads/decontamination/fastqc/*fastqc_data.txt"
   - cutadapt:
-      name: "Cutadapt - Trimming"
+      name: "Cutadapt - trimming"
       target: "cutadapt"
   - kraken:
       name: "Species Diversity"
@@ -82,7 +82,7 @@ table_columns_visible:
   "FastQC - subsampling": False
   "FastQC - deduplication": False
   "FastQC - decontamination": False
-  "Cutadapt - Trimming":
+  "Cutadapt - trimming":
     percent_trimmed: True
   "Species Diversity": False
 

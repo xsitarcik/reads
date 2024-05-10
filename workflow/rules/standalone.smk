@@ -5,7 +5,7 @@ rule multiqc__report:
     output:
         report(
             "results/_aggregation/multiqc.html",
-            category="summary",
+            category="Summary",
             labels={
                 "Type": "MultiQC",
             },
